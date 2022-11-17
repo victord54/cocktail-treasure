@@ -5,7 +5,7 @@
     $password = file_get_contents("data/password");
     try {
         $pdo = new PDO(
-            'mysql:host=localhost;charset=utf8', "root", "");
+            'mysql:host=localhost;charset=utf8', $login, $password);
     } catch (Exception $e) {
         die('Erreur : ' . $e->getMessage());
     }
