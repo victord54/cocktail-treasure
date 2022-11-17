@@ -1,5 +1,7 @@
 <nav class="nav-filtre">
-    <?php 
+    <?php
+    ini_set('display_errors', TRUE);
+    error_reporting(E_ALL);
     //Connexion bdd
     $login = file_get_contents("data/login");
     $password = file_get_contents("data/password");

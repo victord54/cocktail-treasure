@@ -21,7 +21,7 @@
    CREATE DATABASE $dbname;
    USE $dbname;
    
-   CREATE TABLE Utilisateur(
+   CREATE TABLE utilisateur(
       id_utilisateur INT AUTO_INCREMENT,
       nom VARCHAR(50),
       prenom VARCHAR(50),
@@ -36,7 +36,7 @@
       UNIQUE(login)
    );
  
-   CREATE TABLE Recette(
+   CREATE TABLE recette(
       id_recette INT AUTO_INCREMENT,
       titre VARCHAR(50) NOT NULL,
       ingredients VARCHAR(50) NOT NULL,
@@ -45,7 +45,7 @@
       UNIQUE(titre)
    );
  
-   CREATE TABLE Categorie(
+   CREATE TABLE categorie(
       id_categorie INT AUTO_INCREMENT,
       nom VARCHAR(50) NOT NULL,
       PRIMARY KEY(id_categorie),
@@ -70,7 +70,7 @@
       id_categorie INT,
       id_sous_categorie INT,
       PRIMARY KEY(id_categorie, id_sous_categorie),
-      FOREIGN KEY(id_categorie) REFERENCES Categorie(id_categorie),
+      FOREIGN KEY(id_categorie) REFERENCES categorie(id_categorie),
       FOREIGN KEY(id_sous_categorie) REFERENCES sous_categorie(id_sous_categorie)
    );
    
@@ -78,7 +78,7 @@
       id_categorie INT,
       id_super_categorie INT,
       PRIMARY KEY(id_categorie, id_super_categorie),
-      FOREIGN KEY(id_categorie) REFERENCES Categorie(id_categorie),
+      FOREIGN KEY(id_categorie) REFERENCES categorie(id_categorie),
       FOREIGN KEY(id_super_categorie) REFERENCES super_categorie(id_super_categorie)
    );
    
@@ -86,16 +86,16 @@
       id_recette INT,
       id_categorie INT,
       PRIMARY KEY(id_recette, id_categorie),
-      FOREIGN KEY(id_recette) REFERENCES Recette(id_recette),
-      FOREIGN KEY(id_categorie) REFERENCES Categorie(id_categorie)
+      FOREIGN KEY(id_recette) REFERENCES recette(id_recette),
+      FOREIGN KEY(id_categorie) REFERENCES categorie(id_categorie)
    );
    
    CREATE TABLE favoris(
       id_utilisateur INT,
       id_recette INT,
       PRIMARY KEY(id_utilisateur, id_recette),
-      FOREIGN KEY(id_utilisateur) REFERENCES Utilisateur(id_utilisateur),
-      FOREIGN KEY(id_recette) REFERENCES Recette(id_recette)
+      FOREIGN KEY(id_utilisateur) REFERENCES utilisateur(id_utilisateur),
+      FOREIGN KEY(id_recette) REFERENCES recette(id_recette)
    );
    ";
 
@@ -106,14 +106,14 @@
    }
 
    foreach ($Hierarchie as $cat=>$ss_sp_cat) {
-      //Insère la catégorie dans la table Categorie
-      $sql = "INSERT INTO Categorie(nom) VALUES (:nom)";
+      //Insère la catégorie dans la table categorie
+      $sql = "INSERT INTO categorie(nom) VALUES (:nom)";
       $query = $pdo->prepare($sql);
       $query->bindValue(":nom", $cat, PDO::PARAM_STR);
       $query->execute();
 
       //Récupère l'id de la catégorie actuelle
-      $sql_id_cat = "SELECT id_categorie FROM Categorie WHERE nom = \"$cat\"";
+      $sql_id_cat = "SELECT id_categorie FROM categorie WHERE nom = \"$cat\"";
       $requete = $pdo->query($sql_id_cat);
       $id_cat = $requete->fetch();
 
@@ -125,7 +125,7 @@
             $id_ss_cat = $requete_ss->fetch();
 
             if (!($id_ss_cat)) {
-               //Insère la sous-catégorie dans la table Sous_categorie
+               //Insère la sous-catégorie dans la table sous_categorie
                $sql = "INSERT INTO sous_categorie(nom) VALUES (:nom)";
                $query = $pdo->prepare($sql);
                $query->bindValue(":nom", $ss_cat, PDO::PARAM_STR);
@@ -181,7 +181,7 @@
    $statement->execute();
    $super_cat = $statement->fetchAll();
 
-   $sqlQuery = "SELECT nom FROM Categorie;";
+   $sqlQuery = "SELECT nom FROM categorie;";
    $statement = $pdo->prepare($sqlQuery);
    $statement->setFetchMode(PDO::FETCH_ASSOC);
    $statement->execute();
@@ -202,6 +202,7 @@
    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
+   <?php include_once("header.php");?>
    <h1>Base de donnée créée</h1>
    <table class="data">
       <tr>
