@@ -15,12 +15,18 @@ ul {
 .nav-item {
     float: left;
 }
+
 .nav-item > a {
     display: block;
     color: white;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+    transition: color 0.5s;
+}
+
+.nav-item > a:hover {
+    color: orange;
 }
 
 footer {

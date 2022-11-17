@@ -3,25 +3,26 @@
     //Connexion bdd
     $login = file_get_contents("data/login");
     $password = file_get_contents("data/password");
+    $dbname = 'cocktail_treasure';
     try {
         $pdo = new PDO(
-            'mysql:host=localhost;charset=utf8', $login, $password);
+            "mysql:host=localhost;dbname=$dbname;charset=utf8", $login, $password);
     } catch (Exception $e) {
         die('Erreur : ' . $e->getMessage());
     }
 
-    $sql = "SELECT `nom` FROM `categorie` WHERE `id_categorie` NOT IN (SELECT `id_categorie` FROM `possede_spc`)"; //La requete marche sur phpmyadmin ça sort bien Aliment 
-    $requete = $pdo->query($sql);                                                                                   //Mais ensuite marche po
-    //$haut_hierarchie = $requete->fetchAll();
-    
-    
+    // Renvoie le nom des catégories qui n'ont pas de super-categories --> Aliment
+    $sqlQuery = "SELECT nom FROM categorie WHERE id_categorie NOT IN (SELECT id_categorie FROM possede_spc);";
+    $statement = $pdo->prepare($sqlQuery);
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+    $statement->execute();
 
-    //var_dump($haut_hierarchie);
-    
+    $haut_hierarchie = $statement->fetchAll();
+    foreach($haut_hierarchie as $row) {
+        //var_dump($row);
+        echo "<span>\n";
+        echo ($row['nom']);
+        echo "</span>\n";
+    }
     ?>
-    <span>Aliments</span>
-    <ul>
-        <li>Alcool</li>
-    </ul>
-
 </nav>
