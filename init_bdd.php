@@ -119,17 +119,26 @@
 
       if (isset($ss_sp_cat['sous-categorie'])) {
          foreach($ss_sp_cat['sous-categorie'] as $ss_cat){
-            //Insère la sous-catégorie dans la table Sous_categorie
-            $sql = "INSERT INTO `sous_categorie`(`nom`) VALUES (:nom)";    
-            $query = $pdo->prepare($sql);
-            $query->bindValue(":nom", $ss_cat, PDO::PARAM_STR);
-            $query->execute();
-            
-            //Récupère l'id de la sous-catégorie actuelle 
+            //Récupère l'id de la sous-catégorie actuelle si il existe
             $sql_id_ss_cat = "SELECT `id_sous_categorie` FROM `sous_categorie` WHERE `nom`=\"$ss_cat\"";
             $requete_ss = $pdo->query($sql_id_ss_cat);
             $id_ss_cat = $requete_ss->fetch();
+
+            if (!($id_ss_cat)){
+               //Insère la sous-catégorie dans la table Sous_categorie
+               $sql = "INSERT INTO `sous_categorie`(`nom`) VALUES (:nom)";    
+               $query = $pdo->prepare($sql);
+               $query->bindValue(":nom", $ss_cat, PDO::PARAM_STR);
+               $query->execute();
+
+               //Récupère l'id de la sous-catégorie actuelle
+               $sql_id_ss_cat = "SELECT `id_sous_categorie` FROM `sous_categorie` WHERE `nom`=\"$ss_cat\"";
+               $requete_ss = $pdo->query($sql_id_ss_cat);
+               $id_ss_cat = $requete_ss->fetch();
+            }
             
+            
+
             //Link la catégorie à sa sous-catégorie dans la table possede_ssc
             $sql = "INSERT INTO `possede_ssc`(`id_categorie`, `id_sous_categorie`) VALUES (:id_categorie, :id_sous_categorie)";
             $query = $pdo->prepare($sql);
@@ -141,16 +150,26 @@
       }
       if (isset($ss_sp_cat['super-categorie'])){
          foreach($ss_sp_cat['super-categorie'] as $sp_cat){
-            //Insère la super-catégorie dans la table super_categorie
-            $sql = "INSERT INTO `super_categorie`(`nom`) VALUES (:nom)";
-            $query = $pdo->prepare($sql);
-            $query->bindValue(":nom", $sp_cat, PDO::PARAM_STR);
-            $query->execute();
-
-            //Récupère l'id de la super-catégorie actuelle 
+            echo 'cat : ' . $cat;
+            echo "</br>";
+            //Récupère id de la super-catégorie actuelle si elle existe
             $sql_id_sp_cat = "SELECT `id_super_categorie` FROM `super_categorie` WHERE `nom`=\"$sp_cat\"";
             $requete_ss = $pdo->query($sql_id_sp_cat);
             $id_sp_cat = $requete_ss->fetch();
+            
+            if (!($id_sp_cat)){
+               //Insère la super-catégorie dans la table super_categorie
+               $sql = "INSERT INTO `super_categorie`(`nom`) VALUES (:nom)";
+               $query = $pdo->prepare($sql);
+               $query->bindValue(":nom", $sp_cat, PDO::PARAM_STR);
+               $query->execute();
+               echo 'SP cat : ' . $sp_cat;
+               echo "</br>";
+               //Récupère l'id de la super-catégorie actuelle 
+               $sql_id_sp_cat = "SELECT `id_super_categorie` FROM `super_categorie` WHERE `nom`=\"$sp_cat\"";
+               $requete_ss = $pdo->query($sql_id_sp_cat);
+               $id_sp_cat = $requete_ss->fetch();
+            }
             
             //Link la catégorie à sa super-catégorie dans la table possede_spc
             $sql = "INSERT INTO `possede_spc`(`id_categorie`, `id_super_categorie`) VALUES (:id_categorie, :id_super_categorie)";   
