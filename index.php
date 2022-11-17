@@ -10,7 +10,11 @@
 <body>
     <?php include_once("header.php");?>
 </br>
+
     <a href="init_bdd.php">Clique ici bg</a>
+    </br></br>
+    <?php include_once("filtre.php");?>
+    </br>
     </br>
     </br>
     </br>
