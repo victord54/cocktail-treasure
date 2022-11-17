@@ -1,7 +1,7 @@
 <?php
     //Débugg
-    /*ini_set('display_errors', TRUE);
-    error_reporting(E_ALL);*/
+    ini_set('display_errors', TRUE);
+    error_reporting(E_ALL);
    include_once("data/Donnees.inc.php");
 
    //Connexion bdd
@@ -148,8 +148,6 @@
       }
       if (isset($ss_sp_cat['super-categorie'])) {
          foreach($ss_sp_cat['super-categorie'] as $sp_cat) {
-            echo 'cat : ' . $cat;
-            echo "</br>";
             //Récupère id de la super-catégorie actuelle si elle existe
             $sql_id_sp_cat = "SELECT id_super_categorie FROM super_categorie WHERE nom = \"$sp_cat\"";
             $requete_ss = $pdo->query($sql_id_sp_cat);
@@ -161,8 +159,6 @@
                $query = $pdo->prepare($sql);
                $query->bindValue(":nom", $sp_cat, PDO::PARAM_STR);
                $query->execute();
-               echo 'SP cat : ' . $sp_cat;
-               echo "</br>";
                //Récupère l'id de la super-catégorie actuelle
                $sql_id_sp_cat = "SELECT id_super_categorie FROM super_categorie WHERE nom = \"$sp_cat\"";
                $requete_ss = $pdo->query($sql_id_sp_cat);
@@ -179,6 +175,23 @@
          } 
       }
    }
+   $sqlQuery = "SELECT nom FROM super_categorie;";
+   $statement = $pdo->prepare($sqlQuery);
+   $statement->setFetchMode(PDO::FETCH_ASSOC);
+   $statement->execute();
+   $super_cat = $statement->fetchAll();
+
+   $sqlQuery = "SELECT nom FROM Categorie;";
+   $statement = $pdo->prepare($sqlQuery);
+   $statement->setFetchMode(PDO::FETCH_ASSOC);
+   $statement->execute();
+   $categorie = $statement->fetchAll();
+
+   $sqlQuery = "SELECT nom FROM sous_categorie;";
+   $statement = $pdo->prepare($sqlQuery);
+   $statement->setFetchMode(PDO::FETCH_ASSOC);
+   $statement->execute();
+   $sous_cat = $statement->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -186,8 +199,41 @@
 <head>
    <meta charset="UTF-8">
    <title>Création bdd</title>
+   <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
-   <p>Base de donnée créée</p>
+   <h1>Base de donnée créée</h1>
+   <table class="data">
+      <tr>
+         <th>Super catégorie</th>
+      </tr>
+      <?php
+         foreach ($super_cat as $value) {
+            echo "<tr>\n<td>" . $value['nom'] . "</td>\n</tr>";
+         }
+      ?>
+   </table>
+
+   <table class="data">
+      <tr>
+         <th>Catégorie</th>
+      </tr>
+      <?php
+         foreach ($categorie as $value) {
+            echo "<tr>\n<td>" . $value['nom'] . "</td>\n</tr>";
+         }
+      ?>
+   </table>
+
+   <table class="data">
+      <tr>
+         <th>Sous catégorie</th>
+      </tr>
+      <?php
+         foreach ($sous_cat as $value) {
+            echo "<tr>\n<td>" . $value['nom'] . "</td>\n</tr>";
+         }
+      ?>
+   </table>
 </body>
 </html>

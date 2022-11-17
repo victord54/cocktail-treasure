@@ -27,3 +27,17 @@ footer {
     background-color: gray;
     text-align: center;
 }
+
+table {
+    margin: 0px 20px;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 5px 10px;
+}
+
+table {
+    display: inline;
+}
