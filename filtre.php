@@ -1,6 +1,27 @@
 <?php
     ini_set('display_errors', TRUE);
     error_reporting(E_ALL);
+    $direction_hierarchie = array();
+
+    //On récupère le tableau de la hiérarchie actuelle si il existe
+    if (isset($_SESSION['data'])){
+        $direction_hierarchie = $_SESSION['data'];
+        $id_p = $_GET["id"]; //id de la page actuelle
+        $nb= 0;
+        foreach ($direction_hierarchie as $cat){ //On check le positionnement de la page actuelle dans le tab de la hiérarchie
+            if ($cat[0]['id_categorie'] == $id_p){ //si retour en arrière dans la hiérarchie -> supprime tous les éléments après celui
+                $nb_case_a_enlever = count($direction_hierarchie); // actuelle.
+                while ($nb_case_a_enlever > $nb){
+                    array_pop($direction_hierarchie);
+                    $nb_case_a_enlever --;
+                    //var_dump($direction_hierarchie);
+                }
+            }
+            $nb++;
+        }
+    }
+    
+
     //Connexion bdd
     $login = file_get_contents("data/login");
     $password = file_get_contents("data/password");
@@ -13,7 +34,7 @@
     }
 
     //Vérifie id
-    if (!isset($_GET["id"]) || !empty($_GEt["id"])){
+    if (!isset($_GET["id"])){
         //Pas d'id donc tout en haut de la hiérarchie
         // Renvoie le nom des catégories qui n'ont pas de super-categories --> Aliment
         $sqlQuery = "SELECT * FROM categorie WHERE id_categorie NOT IN (SELECT id_categorie FROM possede_spc);";
@@ -21,15 +42,21 @@
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $statement->execute();
         $haut_hierarchie = $statement->fetchAll();
+        array_push($direction_hierarchie,$haut_hierarchie); 
     } else {
         //Récupère id
         $id_p = $_GET["id"];
+        $sqlQuery = "SELECT * FROM categorie WHERE id_categorie=$id_p;";
+        $statement = $pdo->prepare($sqlQuery);
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        $statement->execute();
+        $haut_hierarchie = $statement->fetchAll();
+        array_push($direction_hierarchie,$haut_hierarchie); 
     }
     
-    
-    foreach($haut_hierarchie as $row) {
-        //print($row['id_categorie']);
-        echo '<a href="index.php">' . ($row['nom']) . '</a>';
+    $_SESSION['data'] = $direction_hierarchie;
+    foreach($direction_hierarchie as $row) {
+        echo '<a href="index.php?id=' . ($row[0]['id_categorie']) . '">' . ($row[0]['nom']) . '</a>';
         echo ' > ';
     }
    echo '</br></br>';
@@ -56,10 +83,10 @@
         $statement->execute();
         $sous_cat = $statement->fetchAll();
         //var_dump($sous_cat);
-
+       
         foreach($sous_cat as $cat){
             echo "<li>";
-            //Récupère id de la catégorie correspondant à la sous-catégorie
+            //Récupère id de la catégorie correspondant à la sous-catégorie pour la redirection
             $nom = $cat['nom'];
             $sqlQuery = "SELECT id_categorie FROM categorie  WHERE nom=\"$nom\";";
             $statement = $pdo->prepare($sqlQuery);
@@ -67,7 +94,7 @@
             $statement->execute();
             $id = $statement->fetch();
             //var_dump($id);
-            echo '<a href="index.php&id=' . ($id['id_categorie']) . '">' . ($cat['nom']) . '</a>';
+            echo '<a href="index.php?id=' . ($id['id_categorie']) . '">' . ($cat['nom']) . '</a>';
             echo '</li>';
         }
         echo "</ul>";

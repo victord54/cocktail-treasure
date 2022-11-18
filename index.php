@@ -1,3 +1,18 @@
+<?php 
+session_start();
+ini_set('display_errors',1); 
+error_reporting(E_ALL);
+
+if (isset($_GET["id"])){
+    //Récup les recettes qui contienent l'aliment donc l'id_cat = id
+    //echo $_GET["id"];
+    //echo "ui";
+} else {
+    //Pas d'id donc page index de base donc on est en haut de la hiérarchie
+    $_SESSION['data'] = null;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +27,7 @@
 </br>
 
     <a href="init_bdd.php">Clique ici bg</a>
+    <a href="recettes.php">CCC</a>
     </br></br>
     <?php include_once("filtre.php");?>
     </br>
