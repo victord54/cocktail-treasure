@@ -40,11 +40,12 @@ footer {
     position: relative;
     top:13%;
     left:5px;
-    padding-top:7%;
-    padding-bottom:7%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
     font-size: 20px;
     font-weight: bold;
-    text-align:center; 
+    text-align:start; 
     border:5px double;
     border-radius:20px;
 }
