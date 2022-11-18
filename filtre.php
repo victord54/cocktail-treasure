@@ -51,10 +51,11 @@
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $statement->execute();
         $haut_hierarchie = $statement->fetchAll();
-        array_push($direction_hierarchie,$haut_hierarchie); 
+        array_push($direction_hierarchie,$haut_hierarchie); //push la nouvelle catégorie dans la hiérarchie actuelle
     }
     
-    $_SESSION['data'] = $direction_hierarchie;
+    $_SESSION['data'] = $direction_hierarchie; //set la direction de hierarchie de la session
+
     foreach($direction_hierarchie as $row) {
         echo '<a href="index.php?id=' . ($row[0]['id_categorie']) . '">' . ($row[0]['nom']) . '</a>';
         echo ' > ';
