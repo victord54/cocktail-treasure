@@ -35,19 +35,42 @@ footer {
 }
 
 .nav-filtre {
-    width: 200px;
+    width: 250px;
     background-color:#CBC0D3;
     position: relative;
     top:13%;
-    left:5px;
-    padding-top: 5px;
+    left:0px;
+    padding-top: 45px;
     padding-bottom: 5px;
     padding-left: 5px;
     font-size: 20px;
     font-weight: bold;
     text-align:start; 
     border:5px double;
-    border-radius:20px;
+    
+}
+
+.nav-filtre .super_categorie {
+    position: absolute;
+    height: fit-content;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: aliceblue;
+    border-bottom: solid black;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.nav-filtre a {
+    text-decoration:none;
+    color: rgb(0, 0, 0);
+}
+
+.nav-filtre a:hover {
+    color:rgb(145, 85, 34);
 }
 
 table {
@@ -63,3 +86,4 @@ th, td {
 table {
     display: inline;
 }
+

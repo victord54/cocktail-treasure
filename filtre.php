@@ -55,10 +55,15 @@
     }
     
     $_SESSION['data'] = $direction_hierarchie; //set la direction de hierarchie de la session
-
+    
+    $nb_cat = count($direction_hierarchie);
+    $nb_cat_compte=0;
     foreach($direction_hierarchie as $row) {
         echo '<a href="index.php?id=' . ($row[0]['id_categorie']) . '">' . ($row[0]['nom']) . '</a>';
-        echo ' > ';
+        $nb_cat_compte++;
+        if (!($nb_cat_compte == $nb_cat)){
+            echo ' > ';
+        }
     }
    echo '</br></br>';
     
@@ -71,7 +76,7 @@
     
     foreach($haut_hierarchie as $row) {
         //print($row['id_categorie']);
-        echo "<span style=\"color:red\">\n";
+        echo "<span class=\"super_categorie\">\n";
         echo ($row['nom']);
         echo "</span>\n";
         echo "<ul>";
