@@ -27,7 +27,6 @@ if (isset($_GET["id"])){
 </br>
 
     <a href="init_bdd.php">Clique ici bg</a>
-    <a href="recettes.php">CCC</a>
     </br></br>
     <?php include_once("filtre.php");?>
     </br>
