@@ -12,13 +12,21 @@
         die('Erreur : ' . $e->getMessage());
     }
 
-    // Renvoie le nom des catégories qui n'ont pas de super-categories --> Aliment
-    $sqlQuery = "SELECT * FROM categorie WHERE id_categorie NOT IN (SELECT id_categorie FROM possede_spc);";
-    $statement = $pdo->prepare($sqlQuery);
-    $statement->setFetchMode(PDO::FETCH_ASSOC);
-    $statement->execute();
-    $haut_hierarchie = $statement->fetchAll();
-
+    //Vérifie id
+    if (!isset($_GET["id"]) || !empty($_GEt["id"])){
+        //Pas d'id donc tout en haut de la hiérarchie
+        // Renvoie le nom des catégories qui n'ont pas de super-categories --> Aliment
+        $sqlQuery = "SELECT * FROM categorie WHERE id_categorie NOT IN (SELECT id_categorie FROM possede_spc);";
+        $statement = $pdo->prepare($sqlQuery);
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        $statement->execute();
+        $haut_hierarchie = $statement->fetchAll();
+    } else {
+        //Récupère id
+        $id_p = $_GET["id"];
+    }
+    
+    
     foreach($haut_hierarchie as $row) {
         //print($row['id_categorie']);
         echo '<a href="index.php">' . ($row['nom']) . '</a>';
@@ -51,7 +59,15 @@
 
         foreach($sous_cat as $cat){
             echo "<li>";
-            echo ($cat['nom']);
+            //Récupère id de la catégorie correspondant à la sous-catégorie
+            $nom = $cat['nom'];
+            $sqlQuery = "SELECT id_categorie FROM categorie  WHERE nom=\"$nom\";";
+            $statement = $pdo->prepare($sqlQuery);
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            $statement->execute();
+            $id = $statement->fetch();
+            //var_dump($id);
+            echo '<a href="index.php&id=' . ($id['id_categorie']) . '">' . ($cat['nom']) . '</a>';
             echo '</li>';
         }
         echo "</ul>";
