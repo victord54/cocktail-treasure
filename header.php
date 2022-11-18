@@ -1,4 +1,9 @@
 <header>
+    <h1 class="cocktail_treasure">
+        <span>Cocktail</span>
+        <span>Cocktail</span>
+        <span>Treasure</span>
+    </h1>
     <nav>
         <ul>
             <li class="nav-item"><a href="index.php"><b>Accueil</b></a></li>
