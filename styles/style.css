@@ -34,7 +34,7 @@ footer {
     text-align: center;
 }
 
-.nav-filtre {
+.nav-filtre {    
     width: 250px;
     background-color:#CBC0D3;
     position: relative;
@@ -47,7 +47,6 @@ footer {
     font-weight: bold;
     text-align:start; 
     border:5px double;
-    
 }
 
 .nav-filtre .super_categorie {

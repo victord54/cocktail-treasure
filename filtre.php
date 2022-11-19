@@ -46,9 +46,10 @@
     } else {
         //Récupère id
         $id_p = $_GET["id"];
-        $sqlQuery = "SELECT * FROM categorie WHERE id_categorie=$id_p;";
+        $sqlQuery = "SELECT * FROM categorie WHERE id_categorie=:id;";//On mets :id pcq l'id vient de l'ext -> pas confiance
         $statement = $pdo->prepare($sqlQuery);
         $statement->setFetchMode(PDO::FETCH_ASSOC);
+        $statement->bindValue(":id",$id_p,PDO::PARAM_INT); //On injecte la valeur en vérifiant que c'est bien un entier
         $statement->execute();
         $haut_hierarchie = $statement->fetchAll();
         array_push($direction_hierarchie,$haut_hierarchie); //push la nouvelle catégorie dans la hiérarchie actuelle
