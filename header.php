@@ -6,12 +6,13 @@
     </h1>
     <nav>
         <ul>
-            <li class="nav-item"><a href="index.php"><b>Accueil</b></a></li>
-            <li class="nav-item"><a href="#"><b>Chercher une recette</b></a></li>
-            <li class="nav-item"><a href="#"><b>Ajouter une recette</b></a></li>
-            <li class="nav-item"><a href="#"><b>Modifier une recette</b></a></li>
-            <li class="nav-item"><a href="#"><b>Supprimer une recette</b></a></li>
-            <li class="nav-item"><a href="#"><b>Connexion</b></a></li>
+            <li class="nav-item"><a href="index.php">Accueil</a></li>
+            <li class="nav-item"><a href="#">Chercher une recette</a></li>
+            <li class="nav-item"><a href="#">Ajouter une recette</a></li>
+            <li class="nav-item"><a href="#">Modifier une recette</a></li>
+            <li class="nav-item"><a href="#">Supprimer une recette</a></li>
+            <li class="nav-item"><a href="#">Connexion</a></li>
+            <li class="nav-item" id="creation_bdd"><a href="init_bdd.php">Creation bdd</a></li>
         </ul>
     </nav>
 </header>
