@@ -1,10 +1,4 @@
-<footer>   
-</br></br>
-
-    Victor Dallé & Claire Kurth
-</br></br>
-    © 2022 Copyright
-    </br></br>
-    </br>
-
+<footer>
+    <p>Victor Dallé & Claire Kurth</p>
+    <p>© 2022 Copyright</p>
 </footer>

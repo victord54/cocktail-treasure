@@ -14,7 +14,7 @@ if (isset($_GET["id"])){
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -23,23 +23,8 @@ if (isset($_GET["id"])){
     <title>Page d'accueil de Cocktail Treasure</title>
 </head>
 <body>
-    <?php include_once("header.php");?>
-</br>
-
-    <a href="init_bdd.php">Clique ici bg</a>
-    </br></br>
-    <?php include_once("filtre.php");?>
-    </br>
-    </br>
-    </br>
-    </br>
-    </br>
-    </br>
-    HOVER LE COCKTAIL TOUT EN HAUT MDR
-    </br>
-    </br>
-    </br>
-
+    <?php echo "\n"; include_once("header.php");?>
+    <?php echo "\n"; include_once("filtre.php");?>
+    <?php echo "\n"; include_once("footer.php"); echo "\n";?>
 </body>
-<?php include_once("footer.php");?>
 </html>

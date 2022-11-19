@@ -23,6 +23,7 @@ ul {
     padding: 14px 16px;
     text-decoration: none;
     transition: color 0.5s;
+    font-weight: bold;
 }
 
 .nav-item > a:hover {
@@ -40,6 +41,7 @@ footer {
     position: relative;
     top:13%;
     left:0px;
+    margin-left: 1%;
     padding-top: 45px;
     padding-bottom: 5px;
     padding-left: 5px;
@@ -86,7 +88,10 @@ table {
     display: inline;
 }
 
-
+footer {
+    margin-top: 25%;
+    padding: 0.1% 0;
+}
 
 /*---------------------*/
 .cocktail_treasure {
