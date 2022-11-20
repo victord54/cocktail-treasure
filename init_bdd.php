@@ -40,7 +40,7 @@
       id_recette INT AUTO_INCREMENT,
       titre VARCHAR(250) NOT NULL,
       ingredients VARCHAR(300) NOT NULL,
-      preparation VARCHAR(600) NOT NULL,
+      preparation TEXT NOT NULL,
       PRIMARY KEY(id_recette),
       UNIQUE(titre)
    );
