@@ -19,11 +19,10 @@ $statement->execute();
 $recettes = $statement->fetchAll();
 ?>
 
-<main>
-    <article class="recettes">
+<div class="wrapper_main">
     <?php foreach ($recettes as $recette) { ?>
-        <section class="recette"><?php echo $recette['titre']; ?></section>
+        <article class="conteneur_recette">
+            <section class="recette"><?php echo $recette['titre']; ?></section>
+        </article>
     <?php } ?>
-
-</article>
-</main>
+</div>

@@ -59,7 +59,7 @@
     
     $nb_cat = count($direction_hierarchie);
     $nb_cat_compte=0;
-    echo "\n\t<div id='fil_ariane'>";
+    echo "\n\t<div class=\"fil_ariane\">";
     foreach($direction_hierarchie as $row) {
         echo "\n\t\t";
         echo '<a href="index.php?id=' . ($row[0]['id_categorie']) . '">' . ($row[0]['nom']) . '</a>';
@@ -74,40 +74,41 @@
 ?>
 
 
+<div class="conteneur_nav_filtre">
+    <nav class="nav-filtre">
+        <?php
+            foreach($haut_hierarchie as $row) {
+                //print($row['id_categorie']);
+                echo "<span class=\"super_categorie\">";
+                echo ($row['nom']);
+                echo "</span>\n";
+                echo "<ul>\n";
 
-<nav class="nav-filtre">
-    <?php
-        foreach($haut_hierarchie as $row) {
-            //print($row['id_categorie']);
-            echo "<span class=\"super_categorie\">";
-            echo ($row['nom']);
-            echo "</span>\n";
-            echo "<ul>\n";
-
-            //Récupère les sous catégories
-            $id = $row['id_categorie'];
-            $sqlQuery = "SELECT * FROM sous_categorie JOIN possede_ssc USING (id_sous_categorie,id_sous_categorie) WHERE id_categorie=$id";
-            $statement = $pdo->prepare($sqlQuery);
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
-            $statement->execute();
-            $sous_cat = $statement->fetchAll();
-            //var_dump($sous_cat);
-        
-            foreach($sous_cat as $cat){
-                echo "\t<li>";
-                //Récupère id de la catégorie correspondant à la sous-catégorie pour la redirection
-                $nom = $cat['nom'];
-                $sqlQuery = "SELECT id_categorie FROM categorie  WHERE nom=\"$nom\";";
+                //Récupère les sous catégories
+                $id = $row['id_categorie'];
+                $sqlQuery = "SELECT * FROM sous_categorie JOIN possede_ssc USING (id_sous_categorie,id_sous_categorie) WHERE id_categorie=$id";
                 $statement = $pdo->prepare($sqlQuery);
                 $statement->setFetchMode(PDO::FETCH_ASSOC);
                 $statement->execute();
-                $id = $statement->fetch();
-                //var_dump($id);
-                echo "\n\t\t";
-                echo '<a href="index.php?id=' . ($id['id_categorie']) . '">' . ($cat['nom']) . '</a>';
-                echo "\n\t</li>\n";
+                $sous_cat = $statement->fetchAll();
+                //var_dump($sous_cat);
+            
+                foreach($sous_cat as $cat){
+                    echo "\t<li>";
+                    //Récupère id de la catégorie correspondant à la sous-catégorie pour la redirection
+                    $nom = $cat['nom'];
+                    $sqlQuery = "SELECT id_categorie FROM categorie  WHERE nom=\"$nom\";";
+                    $statement = $pdo->prepare($sqlQuery);
+                    $statement->setFetchMode(PDO::FETCH_ASSOC);
+                    $statement->execute();
+                    $id = $statement->fetch();
+                    //var_dump($id);
+                    echo "\n\t\t";
+                    echo '<a href="index.php?id=' . ($id['id_categorie']) . '">' . ($cat['nom']) . '</a>';
+                    echo "\n\t</li>\n";
+                }
+                echo "</ul>\n";
             }
-            echo "</ul>\n";
-        }
-    ?>
-</nav>
+        ?>
+    </nav>
+</div>

@@ -24,8 +24,10 @@ if (isset($_GET["id"])){
 </head>
 <body>
     <?php echo "\n"; include_once("header.php");?>
-    <?php echo "\n"; include_once("filtre.php");?>
-    <?php echo "\n"; include_once("main.php");?>
+    <div class="parent">
+        <?php echo "\n"; include_once("filtre.php");?>
+        <?php echo "\n"; include_once("main.php");?>
+    </div>
     <?php echo "\n"; include_once("footer.php"); echo "\n";?>
 </body>
 </html>
