@@ -1,0 +1,19 @@
+article.recettes {
+    background-color: gray;
+    padding: 5px;
+    display: grid;
+    row-gap: 20px;
+    grid-template-columns: repeat(5,auto);
+}
+
+section.recette {
+    display: flex;
+    border: 1px solid black;
+    width: 250px;
+    height: 250px;
+    border-radius: 25px;
+    padding: 5px;
+    align-items: center;
+    justify-content: center;
+    background-color: aquamarine;
+}

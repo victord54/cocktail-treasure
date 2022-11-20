@@ -19,7 +19,10 @@ if (isset($_GET["id"])){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/header_style.css">
+    <link rel="stylesheet" href="styles/footer_style.css">
+    <link rel="stylesheet" href="styles/filtre_box_style.css">
+    <link rel="stylesheet" href="styles/recettes_grid_style.css">
     <title>Page d'accueil de Cocktail Treasure</title>
 </head>
 <body>
