@@ -237,7 +237,9 @@
 <head>
    <meta charset="UTF-8">
    <title>Création bdd</title>
-   <link rel="stylesheet" href="styles/style.css">
+   <link rel="stylesheet" href="styles/bdd_init_style.css">
+   <link rel="stylesheet" href="styles/header_style.css">
+   <link rel="stylesheet" href="styles/footer_style.css">
 </head>
 <body>
    <?php include_once("header.php");?>
@@ -294,5 +296,6 @@
          }
       ?>
    </table>
+   <?php include_once("footer.php"); ?>
 </body>
 </html>
