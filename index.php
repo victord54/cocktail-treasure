@@ -1,6 +1,6 @@
 <?php 
 session_start();
-ini_set('display_errors',1); 
+ini_set('display_errors', TRUE);
 error_reporting(E_ALL);
 
 if (isset($_GET["id"])){
@@ -25,6 +25,7 @@ if (isset($_GET["id"])){
 <body>
     <?php echo "\n"; include_once("header.php");?>
     <?php echo "\n"; include_once("filtre.php");?>
+    <?php echo "\n"; include_once("main.php");?>
     <?php echo "\n"; include_once("footer.php"); echo "\n";?>
 </body>
 </html>

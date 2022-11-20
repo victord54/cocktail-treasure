@@ -38,9 +38,9 @@
  
    CREATE TABLE recette(
       id_recette INT AUTO_INCREMENT,
-      titre VARCHAR(50) NOT NULL,
-      ingredients VARCHAR(50) NOT NULL,
-      preparation VARCHAR(50) NOT NULL,
+      titre VARCHAR(250) NOT NULL,
+      ingredients VARCHAR(250) NOT NULL,
+      preparation VARCHAR(250) NOT NULL,
       PRIMARY KEY(id_recette),
       UNIQUE(titre)
    );
@@ -174,6 +174,15 @@
            
          } 
       }
+
+      foreach ($Recettes as $recette) {
+         $sqlQuery = "INSERT INTO recette(titre, ingredients, preparation) VALUE (:titre, :ingredients, :preparation)";
+         $query = $pdo->prepare($sqlQuery);
+         $query->bindValue(':titre', $recette['titre'], PDO::PARAM_STR);
+         $query->bindValue(':ingredients', $recette['ingredients'], PDO::PARAM_STR);
+         $query->bindValue(':preparation', $recette['preparation'], PDO::PARAM_STR);
+         $query->execute();
+      }
    }
    $sqlQuery = "SELECT nom FROM super_categorie;";
    $statement = $pdo->prepare($sqlQuery);
@@ -192,6 +201,12 @@
    $statement->setFetchMode(PDO::FETCH_ASSOC);
    $statement->execute();
    $sous_cat = $statement->fetchAll();
+
+   $sqlQuery = "SELECT * FROM recette;";
+   $statement = $pdo->prepare($sqlQuery);
+   $statement->setFetchMode(PDO::FETCH_ASSOC);
+   $statement->execute();
+   $recettes = $statement->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -233,6 +248,26 @@
       <?php
          foreach ($sous_cat as $value) {
             echo "<tr>\n<td>" . $value['nom'] . "</td>\n</tr>";
+         }
+      ?>
+   </table>
+
+   <table class="data">
+      <tr>
+         <th colspan="3">Recettes</th>
+      </tr>
+      <tr>
+         <th>Titre</th>
+         <th>Ingrédients</th>
+         <th>Préparation</th>
+      </tr>
+      <?php
+         foreach ($recettes as $recette) {
+            echo "<tr>\n";
+            echo "<td>" . $recette['titre'] . "</td>\n";
+            echo "<td>" . $recette['ingredients'] . "</td>\n";
+            echo "<td>" . $recette['preparation'] . "</td>\n";
+            echo"</tr>";
          }
       ?>
    </table>
