@@ -11,7 +11,7 @@
       $pdo = new PDO(
          'mysql:host=localhost;charset=utf8', $login, $password);
    } catch (Exception $e) {
-      die('Erreur : ' . $e->getMessage());
+      die('Erreur connexion à MySQL : ' . $e->getMessage());
    }
 
    //Création de la bdd et de ses tables
@@ -26,7 +26,7 @@
       nom VARCHAR(50),
       prenom VARCHAR(50),
       login VARCHAR(50) NOT NULL,
-      mdp VARCHAR(50) NOT NULL,
+      mdp VARCHAR(200) NOT NULL,
       email VARCHAR(50),
       sexe VARCHAR(50),
       date_naissance DATE,
@@ -39,8 +39,8 @@
    CREATE TABLE recette(
       id_recette INT AUTO_INCREMENT,
       titre VARCHAR(250) NOT NULL,
-      ingredients VARCHAR(250) NOT NULL,
-      preparation VARCHAR(250) NOT NULL,
+      ingredients VARCHAR(300) NOT NULL,
+      preparation VARCHAR(600) NOT NULL,
       PRIMARY KEY(id_recette),
       UNIQUE(titre)
    );
@@ -106,11 +106,16 @@
    }
 
    foreach ($Hierarchie as $cat=>$ss_sp_cat) {
-      //Insère la catégorie dans la table categorie
-      $sql = "INSERT INTO categorie(nom) VALUES (:nom)";
-      $query = $pdo->prepare($sql);
-      $query->bindValue(":nom", $cat, PDO::PARAM_STR);
-      $query->execute();
+      try {
+         //Insère la catégorie dans la table categorie
+         $sql = "INSERT INTO categorie(nom) VALUES (:nom)";
+         $query = $pdo->prepare($sql);
+         $query->bindValue(":nom", $cat, PDO::PARAM_STR);
+         $query->execute();
+      } catch (Exception $e) {
+         die('Erreur insertion des données dans la table catégorie: ' . $e->getMessage());
+      }
+
 
       //Récupère l'id de la catégorie actuelle
       $sql_id_cat = "SELECT id_categorie FROM categorie WHERE nom = \"$cat\"";
@@ -143,7 +148,6 @@
             $query->bindValue(":id_categorie", $id_cat['id_categorie'], PDO::PARAM_INT);
             $query->bindValue(":id_sous_categorie", $id_ss_cat['id_sous_categorie'], PDO::PARAM_INT);
             $query->execute();
-
          }
       }
       if (isset($ss_sp_cat['super-categorie'])) {
@@ -171,42 +175,61 @@
             $query->bindValue(":id_categorie", $id_cat['id_categorie'], PDO::PARAM_INT);
             $query->bindValue(":id_super_categorie", $id_sp_cat['id_super_categorie'], PDO::PARAM_INT);
             $query->execute();
-           
          } 
       }
-
-      foreach ($Recettes as $recette) {
-         $sqlQuery = "INSERT INTO recette(titre, ingredients, preparation) VALUE (:titre, :ingredients, :preparation)";
-         $query = $pdo->prepare($sqlQuery);
-         $query->bindValue(':titre', $recette['titre'], PDO::PARAM_STR);
-         $query->bindValue(':ingredients', $recette['ingredients'], PDO::PARAM_STR);
-         $query->bindValue(':preparation', $recette['preparation'], PDO::PARAM_STR);
-         $query->execute();
+   }
+   foreach ($Recettes as $recette) {
+      try {
+      $sqlInsertRecettes = "INSERT INTO recette(titre, ingredients, preparation) VALUE (:titre, :ingredients, :preparation)";
+      $query = $pdo->prepare($sqlInsertRecettes);
+      $query->bindValue(':titre', $recette['titre'], PDO::PARAM_STR);
+      $query->bindValue(':ingredients', $recette['ingredients'], PDO::PARAM_STR);
+      $query->bindValue(':preparation', $recette['preparation'], PDO::PARAM_STR);
+      $query->execute();
+      }  catch (Exception $e) {
+         die('Erreur insertion des données dans la table recette: ' . $e->getMessage());
       }
    }
-   $sqlQuery = "SELECT nom FROM super_categorie;";
-   $statement = $pdo->prepare($sqlQuery);
-   $statement->setFetchMode(PDO::FETCH_ASSOC);
-   $statement->execute();
-   $super_cat = $statement->fetchAll();
 
-   $sqlQuery = "SELECT nom FROM categorie;";
-   $statement = $pdo->prepare($sqlQuery);
-   $statement->setFetchMode(PDO::FETCH_ASSOC);
-   $statement->execute();
-   $categorie = $statement->fetchAll();
+   try {
+      $sqlQuery = "SELECT nom FROM super_categorie;";
+      $statement = $pdo->prepare($sqlQuery);
+      $statement->setFetchMode(PDO::FETCH_ASSOC);
+      $statement->execute();
+      $super_cat = $statement->fetchAll();
+   } catch (Exception $e) {
+      die('Erreur selection des noms depuis les super-categories: ' . $e->getMessage());
+   }
 
-   $sqlQuery = "SELECT nom FROM sous_categorie;";
-   $statement = $pdo->prepare($sqlQuery);
-   $statement->setFetchMode(PDO::FETCH_ASSOC);
-   $statement->execute();
-   $sous_cat = $statement->fetchAll();
+   try {
+      $sqlQuery = "SELECT nom FROM categorie;";
+      $statement = $pdo->prepare($sqlQuery);
+      $statement->setFetchMode(PDO::FETCH_ASSOC);
+      $statement->execute();
+      $categorie = $statement->fetchAll();
+   } catch (Exception $e) {
+      die('Erreur selection des noms depuis les super-categories: ' . $e->getMessage());
+   }
 
-   $sqlQuery = "SELECT * FROM recette;";
-   $statement = $pdo->prepare($sqlQuery);
-   $statement->setFetchMode(PDO::FETCH_ASSOC);
-   $statement->execute();
-   $recettes = $statement->fetchAll();
+   try {
+      $sqlQuery = "SELECT nom FROM sous_categorie;";
+      $statement = $pdo->prepare($sqlQuery);
+      $statement->setFetchMode(PDO::FETCH_ASSOC);
+      $statement->execute();
+      $sous_cat = $statement->fetchAll();
+   } catch (Exception $e) {
+      die('Erreur selection des noms depuis les super-categories: ' . $e->getMessage());
+   }
+
+   try {
+      $sqlQuery = "SELECT * FROM recette;";
+      $statement = $pdo->prepare($sqlQuery);
+      $statement->setFetchMode(PDO::FETCH_ASSOC);
+      $statement->execute();
+      $recettes = $statement->fetchAll();
+   } catch (Exception $e) {
+      die('Erreur selection des noms depuis les super-categories: ' . $e->getMessage());
+   }
 ?>
 
 <!DOCTYPE html>
