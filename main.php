@@ -22,9 +22,7 @@ $recettes = $statement->fetchAll();
 <main>
     <article class="recettes">
     <?php foreach ($recettes as $recette) { ?>
-        <section class="recette">
-            <?php echo $recette['titre']; ?>
-        </section>
+        <section class="recette"><?php echo $recette['titre']; ?></section>
     <?php } ?>
 
 </article>
