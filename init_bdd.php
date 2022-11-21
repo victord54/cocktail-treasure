@@ -1,22 +1,24 @@
 <?php
 use FFI\Exception;
-    //Débugg
-    ini_set('display_errors', TRUE);
-    error_reporting(E_ALL);
+   //Débug
+   ini_set('display_errors', TRUE);
+   error_reporting(E_ALL);
    include_once("data/Donnees.inc.php");
 
-   //Connexion bdd
+   // Va chercher le login dans un fichier externe pour plus de sécurité et éviter de devoir le changer à chaque commit (push).
    $login = file_get_contents("data/login");
+   // Va chercher le mdp dans un fichier externe.
    $password = file_get_contents("data/password");
    try {
-      $pdo = new PDO(
-         'mysql:host=localhost;charset=utf8', $login, $password);
+      // Connexion à la bdd.
+      $pdo = new PDO('mysql:host=localhost;charset=utf8', $login, $password);
    } catch (Exception $e) {
       die('Erreur connexion à MySQL : ' . $e->getMessage());
    }
 
-   //Création de la bdd et de ses tables
+   // Création de la bdd.
    $dbname = 'cocktail_treasure';
+   // Création des tables.
    $sql = "
    DROP DATABASE IF EXISTS $dbname;
    CREATE DATABASE $dbname;
@@ -108,7 +110,7 @@ use FFI\Exception;
 
    foreach ($Hierarchie as $cat=>$ss_sp_cat) {
       try {
-         //Insère la catégorie dans la table categorie
+         // Insère la catégorie dans la table categorie.
          $sql = "INSERT INTO categorie(nom) VALUES (:nom)";
          $query = $pdo->prepare($sql);
          $query->bindValue(":nom", $cat, PDO::PARAM_STR);
@@ -118,32 +120,25 @@ use FFI\Exception;
       }
 
 
-      //Récupère l'id de la catégorie actuelle
+      // Récupère l'id de la catégorie actuelle.
       $sql_id_cat = "SELECT id_categorie FROM categorie WHERE nom = \"$cat\"";
       $requete = $pdo->query($sql_id_cat);
       $id_cat = $requete->fetch();
 
       if (isset($ss_sp_cat['sous-categorie'])) {
          foreach($ss_sp_cat['sous-categorie'] as $ss_cat) {
-            //Récupère l'id de la sous-catégorie actuelle si il existe
+            // Insère la sous-catégorie dans la table sous_categorie.
+            $sql = "INSERT IGNORE INTO sous_categorie(nom) VALUES (:nom)";
+            $query = $pdo->prepare($sql);
+            $query->bindValue(":nom", $ss_cat, PDO::PARAM_STR);
+            $query->execute();
+
+            // Récupère l'id de la sous-catégorie actuelle que l'on vient de créer.
             $sql_id_ss_cat = "SELECT id_sous_categorie FROM sous_categorie WHERE nom = \"$ss_cat\"";
             $requete_ss = $pdo->query($sql_id_ss_cat);
             $id_ss_cat = $requete_ss->fetch();
-
-            if (!($id_ss_cat)) {
-               //Insère la sous-catégorie dans la table sous_categorie
-               $sql = "INSERT INTO sous_categorie(nom) VALUES (:nom)";
-               $query = $pdo->prepare($sql);
-               $query->bindValue(":nom", $ss_cat, PDO::PARAM_STR);
-               $query->execute();
-
-               //Récupère l'id de la sous-catégorie actuelle
-               $sql_id_ss_cat = "SELECT id_sous_categorie FROM sous_categorie WHERE nom = \"$ss_cat\"";
-               $requete_ss = $pdo->query($sql_id_ss_cat);
-               $id_ss_cat = $requete_ss->fetch();
-            }
             
-            //Link la catégorie à sa sous-catégorie dans la table possede_ssc
+            // Link la catégorie à sa sous-catégorie dans la table possede_ssc.
             $sql = "INSERT INTO possede_ssc(id_categorie, id_sous_categorie) VALUES (:id_categorie, :id_sous_categorie)";
             $query = $pdo->prepare($sql);
             $query->bindValue(":id_categorie", $id_cat['id_categorie'], PDO::PARAM_INT);
@@ -153,30 +148,24 @@ use FFI\Exception;
       }
       if (isset($ss_sp_cat['super-categorie'])) {
          foreach($ss_sp_cat['super-categorie'] as $sp_cat) {
-            //Récupère id de la super-catégorie actuelle si elle existe
+            // Insère la super-catégorie dans la table super_categorie.
+            $sql = "INSERT IGNORE INTO super_categorie(nom) VALUES (:nom)";
+            $query = $pdo->prepare($sql);
+            $query->bindValue(":nom", $sp_cat, PDO::PARAM_STR);
+            $query->execute();
+
+            // Récupère id de la super-catégorie actuelle que l'on vient de créer.
             $sql_id_sp_cat = "SELECT id_super_categorie FROM super_categorie WHERE nom = \"$sp_cat\"";
             $requete_ss = $pdo->query($sql_id_sp_cat);
             $id_sp_cat = $requete_ss->fetch();
-            
-            if (!($id_sp_cat)) {
-               //Insère la super-catégorie dans la table super_categorie
-               $sql = "INSERT INTO super_categorie(nom) VALUES (:nom)";
-               $query = $pdo->prepare($sql);
-               $query->bindValue(":nom", $sp_cat, PDO::PARAM_STR);
-               $query->execute();
-               //Récupère l'id de la super-catégorie actuelle
-               $sql_id_sp_cat = "SELECT id_super_categorie FROM super_categorie WHERE nom = \"$sp_cat\"";
-               $requete_ss = $pdo->query($sql_id_sp_cat);
-               $id_sp_cat = $requete_ss->fetch();
-            }
 
-            //Link la catégorie à sa super-catégorie dans la table possede_spc
+            // Link la catégorie à sa super-catégorie dans la table possede_spc.
             $sql = "INSERT INTO possede_spc(id_categorie, id_super_categorie) VALUES (:id_categorie, :id_super_categorie)";
             $query = $pdo->prepare($sql);
             $query->bindValue(":id_categorie", $id_cat['id_categorie'], PDO::PARAM_INT);
             $query->bindValue(":id_super_categorie", $id_sp_cat['id_super_categorie'], PDO::PARAM_INT);
             $query->execute();
-         } 
+         }
       }
    }
    foreach ($Recettes as $recette) {
@@ -187,39 +176,34 @@ use FFI\Exception;
       $query->bindValue(':ingredients', $recette['ingredients'], PDO::PARAM_STR);
       $query->bindValue(':preparation', $recette['preparation'], PDO::PARAM_STR);
       $query->execute();
-      foreach ($recette['index'] as $ingredient){
-         try { //On récupère l'id de l'ingrédient
-            $sqlGetIdIngredient = "SELECT id_categorie FROM categorie WHERE nom = \"$ingredient\"";
-            $statement = $pdo->prepare($sqlGetIdIngredient);
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
-            $statement->execute();
-            $idIngredient = $statement->fetchAll();
-            //print($idIngredient[0]['id_categorie']);
-         } catch (Exception $e) {
-            die('Erreur selection de l\'id categorie à partir du nom de la categorie : ' . $e->getMessage());
-         }
 
-         try{ //On récupère l'id de la recette 
-            $titre = $recette['titre'];
-            $sqlGetIdRecette = "SELECT id_recette FROM recette WHERE titre = \"$titre\"";
-            $statement = $pdo->prepare($sqlGetIdRecette);
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
-            $statement->execute();
-            $idRecette = $statement->fetchAll();
-            //var_dump($idRecette);
-         } catch (Exception $e){
-            die('Erreur selection de l\'id de la recette à partir du titre de la recette : ' . $e->getMessage());
-         }
-
-         try { //Insertion de l'id recette et id_categorie dans la table contient_ingredient
-            $sqlBindIngredientToRecette = "INSERT INTO contient_ingredient(id_recette, id_categorie) VALUE (:recette, :categorie)";
-            $query = $pdo->prepare($sqlBindIngredientToRecette);
-            $query->bindValue(':recette', $idRecette[0]['id_recette'], PDO::PARAM_INT);
-            $query->bindValue(':categorie', $idIngredient[0]['id_categorie'], PDO::PARAM_INT);
-            $query->execute();
-         } catch (Exception $e){
-            die('Erreur insertion des données dans la table contient_ingredient: ' . $e->getMessage());
-         }
+      foreach ($recette['index'] as $ingredient) {
+         $sqlQuery = "SELECT id_categorie FROM categorie WHERE nom = \"$ingredient\";";
+         $statement = $pdo->prepare($sqlQuery);
+         $statement->setFetchMode(PDO::FETCH_ASSOC);
+         $statement->execute();
+         $id_ingredient = $statement->fetch();
+         // echo "<pre>\n"; // Debug
+         // echo $recette['titre'];
+         // echo " = ";
+         // print_r($id_ingredient);
+         // echo "</pre>\n";
+         $sqlQuery = "SELECT id_recette FROM recette WHERE titre = :titre;";
+         $statement = $pdo->prepare($sqlQuery);
+         $statement->setFetchMode(PDO::FETCH_ASSOC);
+         $statement->bindValue(':titre', $recette['titre']);
+         $statement->execute();
+         $id_recette = $statement->fetch();
+         // echo "<pre>\n"; // Debug
+         // echo $recette['titre'];
+         // echo " = ";
+         // print_r($id_recette);
+         // echo "</pre>\n";
+         $sqlInsert = "INSERT IGNORE INTO contient_ingredient(id_recette, id_categorie) VALUES (:id_recette, :id_ingredient);";
+         $statement = $pdo->prepare($sqlInsert);
+         $statement->bindValue(':id_recette', $id_recette['id_recette']);
+         $statement->bindValue(':id_ingredient', $id_ingredient['id_categorie']);
+         $statement->execute();
       }
       }  catch (Exception $e) {
          die('Erreur insertion des données dans la table recette: ' . $e->getMessage());
