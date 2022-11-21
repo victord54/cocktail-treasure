@@ -22,6 +22,7 @@ try {
     die('Erreur : ' . $e->getMessage());
 }
 $recettes= array();
+
 if ($id == null){
     $sqlQuery = "SELECT titre FROM recette;";
     $statement = $pdo->prepare($sqlQuery);
@@ -32,7 +33,7 @@ if ($id == null){
 } else {
     $id_present = true;
     $recettes = getRecettes($pdo, $id, $recettes);
-    sort($recettes);
+    sort($recettes);//Tri pour remettre dans l'ordre alphabétique
     //var_dump($recettes);
 }
 
@@ -60,7 +61,7 @@ function getRecettes($pdo, $id, $recettes){
         $statement->execute();
         $recette = $statement->fetchAll();
         foreach ($recette as $rec){
-            if (!in_array($rec['titre'], $recettes)){
+            if (!in_array($rec['titre'], $recettes)){ //On check que le titre n'est pas déjà dans le tableau
                 array_push($recettes, $rec['titre']);
             }
         }

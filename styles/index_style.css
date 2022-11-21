@@ -1,7 +1,7 @@
 /*Grid parent contenant le fil ariane, le filtre et le grid des recettes*/
 .parent {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: 280px auto;
     grid-template-rows: auto auto;
     column-gap: 10px;
     row-gap: 10px;
@@ -22,6 +22,7 @@
 .nav-filtre {    
     position:relative;
     width: 250px;
+    max-width: 250px;
     min-height: 25px;
     max-height: fit-content;
     background-color:#CBC0D3;
