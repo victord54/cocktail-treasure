@@ -92,9 +92,9 @@ function getRecettes($pdo, $id, $recettes){
         <article class="conteneur_recette">
             <section class="recette"><?php 
             if ($id_present) {
-                echo $recette;
+                echo '<p>' . $recette . '</p>';
              } else {
-                echo $recette['titre'];
+                echo '<p>'. $recette['titre'] . '</p>';
              } ?></section>
         </article>
     <?php } ?>

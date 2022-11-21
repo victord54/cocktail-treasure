@@ -78,5 +78,15 @@
     padding: 5px;
     align-items: center;
     justify-content: center;
-    background-color: aquamarine;
+    background-color: aquamarine;    
+}
+
+.recette {
+    position: relative;
+    vertical-align: middle;
+}
+.conteneur_recette p {
+    padding-top : 35% ;
+    text-align: center;
+    vertical-align: middle;
 }
