@@ -27,7 +27,7 @@ try {
         <form id="connexion_form"action="#" method="post">
             <label for="login">Login</label><input type="text" name="login" id="login">
             <br>
-            <label for="password">Mot de passe</label><input type="password" name="password" id="password">
+            <label for="password">Mot de passe</label><input type="password" name="password" id="password">zz
             <input type="submit" name="submit" value="Connexion">
         </form>
     </div>

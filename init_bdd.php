@@ -1,4 +1,5 @@
 <?php
+use FFI\Exception;
     //Débugg
     ini_set('display_errors', TRUE);
     error_reporting(E_ALL);
@@ -186,6 +187,40 @@
       $query->bindValue(':ingredients', $recette['ingredients'], PDO::PARAM_STR);
       $query->bindValue(':preparation', $recette['preparation'], PDO::PARAM_STR);
       $query->execute();
+      foreach ($recette['index'] as $ingredient){
+         try { //On récupère l'id de l'ingrédient
+            $sqlGetIdIngredient = "SELECT id_categorie FROM categorie WHERE nom = \"$ingredient\"";
+            $statement = $pdo->prepare($sqlGetIdIngredient);
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            $statement->execute();
+            $idIngredient = $statement->fetchAll();
+            //print($idIngredient[0]['id_categorie']);
+         } catch (Exception $e) {
+            die('Erreur selection de l\'id categorie à partir du nom de la categorie : ' . $e->getMessage());
+         }
+
+         try{ //On récupère l'id de la recette 
+            $titre = $recette['titre'];
+            $sqlGetIdRecette = "SELECT id_recette FROM recette WHERE titre = \"$titre\"";
+            $statement = $pdo->prepare($sqlGetIdRecette);
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            $statement->execute();
+            $idRecette = $statement->fetchAll();
+            //var_dump($idRecette);
+         } catch (Exception $e){
+            die('Erreur selection de l\'id de la recette à partir du titre de la recette : ' . $e->getMessage());
+         }
+
+         try { //Insertion de l'id recette et id_categorie dans la table contient_ingredient
+            $sqlBindIngredientToRecette = "INSERT INTO contient_ingredient(id_recette, id_categorie) VALUE (:recette, :categorie)";
+            $query = $pdo->prepare($sqlBindIngredientToRecette);
+            $query->bindValue(':recette', $idRecette[0]['id_recette'], PDO::PARAM_INT);
+            $query->bindValue(':categorie', $idIngredient[0]['id_categorie'], PDO::PARAM_INT);
+            $query->execute();
+         } catch (Exception $e){
+            die('Erreur insertion des données dans la table contient_ingredient: ' . $e->getMessage());
+         }
+      }
       }  catch (Exception $e) {
          die('Erreur insertion des données dans la table recette: ' . $e->getMessage());
       }
