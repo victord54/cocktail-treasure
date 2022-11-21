@@ -1,20 +1,20 @@
 <?php
     ini_set('display_errors', TRUE);
     error_reporting(E_ALL);
-    $direction_hierarchie = array();
+    $fil_ariane = array();
 
     //On récupère le tableau de la hiérarchie actuelle si il existe
     if (isset($_SESSION['data'])){
-        $direction_hierarchie = $_SESSION['data'];
+        $fil_ariane = $_SESSION['data'];
         $id_p = $_GET["id"]; //id de la page actuelle
         $nb= 0;
-        foreach ($direction_hierarchie as $cat){ //On check le positionnement de la page actuelle dans le tab de la hiérarchie
+        foreach ($fil_ariane as $cat){ //On check le positionnement de la page actuelle dans le tab de la hiérarchie
             if ($cat[0]['id_categorie'] == $id_p){ //si retour en arrière dans la hiérarchie -> supprime tous les éléments après celui
-                $nb_case_a_enlever = count($direction_hierarchie); // actuelle.
+                $nb_case_a_enlever = count($fil_ariane); // actuelle.
                 while ($nb_case_a_enlever > $nb){
-                    array_pop($direction_hierarchie);
+                    array_pop($fil_ariane);
                     $nb_case_a_enlever --;
-                    //var_dump($direction_hierarchie);
+                    //var_dump($fil_ariane);
                 }
             }
             $nb++;
@@ -42,7 +42,7 @@
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $statement->execute();
         $haut_hierarchie = $statement->fetchAll();
-        array_push($direction_hierarchie,$haut_hierarchie); 
+        array_push($fil_ariane,$haut_hierarchie); 
     } else {
         //Récupère id
         $id_p = $_GET["id"];
@@ -52,15 +52,15 @@
         $statement->bindValue(":id",$id_p,PDO::PARAM_INT); //On injecte la valeur en vérifiant que c'est bien un entier
         $statement->execute();
         $haut_hierarchie = $statement->fetchAll();
-        array_push($direction_hierarchie,$haut_hierarchie); //push la nouvelle catégorie dans la hiérarchie actuelle
+        array_push($fil_ariane,$haut_hierarchie); //push la nouvelle catégorie dans la hiérarchie actuelle
     }
     
-    $_SESSION['data'] = $direction_hierarchie; //set la direction de hierarchie de la session
+    $_SESSION['data'] = $fil_ariane; //set la direction de hierarchie de la session
     
-    $nb_cat = count($direction_hierarchie);
+    $nb_cat = count($fil_ariane);
     $nb_cat_compte=0;
     echo "\n\t<div class=\"fil_ariane\">";
-    foreach($direction_hierarchie as $row) {
+    foreach($fil_ariane as $row) {
         echo "\n\t\t";
         echo '<a href="index.php?id=' . ($row[0]['id_categorie']) . '">' . ($row[0]['nom']) . '</a>';
         echo "\n";
