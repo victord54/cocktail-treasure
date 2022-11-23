@@ -112,7 +112,7 @@ use FFI\Exception;
       try {
          // Insère la catégorie dans la table categorie.
          $sql = "INSERT INTO categorie(nom) VALUES (:nom)";
-         $query = $pdo->prepare($sql);
+         $query = $pdo->prepare($sql); 
          $query->bindValue(":nom", $cat, PDO::PARAM_STR);
          $query->execute();
       } catch (Exception $e) {
@@ -172,7 +172,8 @@ use FFI\Exception;
       try {
       $sqlInsertRecettes = "INSERT INTO recette(titre, ingredients, preparation) VALUE (:titre, :ingredients, :preparation)";
       $query = $pdo->prepare($sqlInsertRecettes);
-      $query->bindValue(':titre', $recette['titre'], PDO::PARAM_STR);
+      //ucfirt mets en maj la première lettre, mb_strtolower mets en minuscule avec l'encodage UTF-8
+      $query->bindValue(':titre', ucfirst(mb_strtolower($recette['titre'], "UTF-8")), PDO::PARAM_STR);
       $query->bindValue(':ingredients', $recette['ingredients'], PDO::PARAM_STR);
       $query->bindValue(':preparation', $recette['preparation'], PDO::PARAM_STR);
       $query->execute();

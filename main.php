@@ -97,5 +97,6 @@ function getRecettes($pdo, $id, $recettes){
                 echo '<p>'. $recette['titre'] . '</p>';
              } ?></section>
         </article>
+        
     <?php } ?>
 </div>
