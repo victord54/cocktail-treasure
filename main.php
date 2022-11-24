@@ -24,7 +24,7 @@ try {
 $recettes= array();
 
 if ($id == null){
-    $sqlQuery = "SELECT titre FROM recette;";
+    $sqlQuery = "SELECT titre,id_recette FROM recette;";
     $statement = $pdo->prepare($sqlQuery);
     $statement->setFetchMode(PDO::FETCH_ASSOC);
     $statement->execute();
@@ -81,22 +81,28 @@ function getRecettes($pdo, $id, $recettes){
     }
     return $recettes;
 }
-    
-
-
-
 ?>
 
 <div class="wrapper_main">
-    <?php foreach ($recettes as $recette) { ?>
-        <article class="conteneur_recette">
+    <?php foreach ($recettes as $recette) { 
+        if ($id_present) {
+            $sqlQuery ="SELECT id_recette FROM recette WHERE titre=\"$recette\"" ;
+            $statement = $pdo->prepare($sqlQuery);
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            $statement->execute();
+            $id_recette = $statement->fetchAll();
+            $id_recette = $id_recette[0]['id_recette'];
+        } else {
+            $id_recette = $recette['id_recette'];
+        }?>
+        <article class="conteneur_recette" onclick="window.location.href='recette.php?id= <?php echo $id_recette;?>';">
             <section class="recette"><?php 
             if ($id_present) {
-                echo '<p>' . $recette . '</p>';
+                //echo '<p>' .$id_recette[0]['id_recette'] .'</p>';
+                echo '<p>'. $recette . '</p>';
              } else {
-                echo '<p>'. $recette['titre'] . '</p>';
+                echo '<p>'. $recette . '</p>';
              } ?></section>
         </article>
-        
     <?php } ?>
 </div>

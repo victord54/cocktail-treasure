@@ -42,7 +42,7 @@ ul {
     letter-spacing: 0.1px;
     color:transparent;
     text-transform: uppercase;
-    cursor: pointer;
+    cursor: default;
 }
 
 .cocktail_treasure span:nth-child(1){
