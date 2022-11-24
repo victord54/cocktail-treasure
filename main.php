@@ -101,7 +101,7 @@ function getRecettes($pdo, $id, $recettes){
                 //echo '<p>' .$id_recette[0]['id_recette'] .'</p>';
                 echo '<p>'. $recette . '</p>';
              } else {
-                echo '<p>'. $recette . '</p>';
+                echo '<p>'. $recette['titre'] . '</p>';
              } ?></section>
         </article>
     <?php } ?>
