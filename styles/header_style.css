@@ -6,7 +6,7 @@ header > nav {
     background-color: #333;
 }
 
-ul {
+header ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -42,7 +42,7 @@ ul {
     letter-spacing: 0.1px;
     color:transparent;
     text-transform: uppercase;
-    cursor: pointer;
+    cursor: default;
 }
 
 .cocktail_treasure span:nth-child(1){
