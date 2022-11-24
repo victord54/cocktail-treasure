@@ -1,0 +1,48 @@
+#inscription {
+    width:600px;
+    margin:0 auto;
+    margin-top:10%;
+}
+
+input[type=text], input[type=password], input[type=date], input[type=radio], input[type=email] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+label[for=h], label[for=f] {
+    text-align: center;
+    display: block;
+}
+
+#inscription_form {
+    width:100%;
+    padding: 30px;
+    border: 1px solid #f1f1f1;
+    background: #fff;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+input[type=submit] {
+    background-color: #4316e7;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.5s;
+}
+
+input[type=submit]:hover {
+    background-color: white;
+    color: #53af57;
+    border: 1px solid #53af57;
+}
+
+#erreur_formulaire {
+    background-color: red;
+}

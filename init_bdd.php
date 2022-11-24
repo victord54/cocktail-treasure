@@ -112,7 +112,7 @@ use FFI\Exception;
       try {
          // Insère la catégorie dans la table categorie.
          $sql = "INSERT INTO categorie(nom) VALUES (:nom)";
-         $query = $pdo->prepare($sql); 
+         $query = $pdo->prepare($sql);
          $query->bindValue(":nom", $cat, PDO::PARAM_STR);
          $query->execute();
       } catch (Exception $e) {
