@@ -7,7 +7,7 @@
     <nav>
         <ul>
             <li class="nav-item"><a href="index.php">Accueil</a></li>
-            <li class="nav-item"><a href="#">Chercher une recette</a></li>
+            <li class="nav-item"><a href="recherche.php">Chercher une recette</a></li>
             <li class="nav-item"><a href="#">Ajouter une recette</a></li>
             <li class="nav-item"><a href="#">Modifier une recette</a></li>
             <li class="nav-item"><a href="#">Supprimer une recette</a></li>
