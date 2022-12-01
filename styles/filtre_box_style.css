@@ -15,6 +15,9 @@
     border:5px double;
 }
 
+.nav-filtre ul {
+    list-style: none;
+}
 .nav-filtre .super_categorie {
     position: absolute;
     height: fit-content;

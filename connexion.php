@@ -6,7 +6,6 @@ error_reporting(E_ALL);
 $login = file_get_contents("data/login");
 $password = file_get_contents("data/password");
 $dbname = 'cocktail_treasure';
-$connected = false;
 try {
     $pdo = new PDO(
         "mysql:host=localhost;dbname=$dbname;charset=utf8", $login, $password);
@@ -26,7 +25,7 @@ if (isset($_POST['submit'])) {
                 echo 'Bienvenue ' . $identifiants['prenom'];
                 $_SESSION['user_login'] = $identifiants['login'];
                 $_SESSION['user_name'] = $identifiants['prenom'];
-                $connected = true;
+                header("location: index.php");
             } else {
                 echo "Mauvais mot de passe " . $identifiants['prenom'];
             }
@@ -35,8 +34,7 @@ if (isset($_POST['submit'])) {
         }
     }
 } else if (isset($_SESSION['user_login'])) {
-    echo "vous êtes déjà connecté";
-    $connected = true;
+    header("location: index.php");
 }
 ?>
 
@@ -53,20 +51,14 @@ if (isset($_POST['submit'])) {
 </head>
 <body>
     <?php include_once('header.php'); ?>
-    <?php if (!$connected) {  ?>
-        <div id="connexion">
-            <form id="connexion_form" action="#" method="post">
-                <label for="login">Login</label><input type="text" name="login" id="login">
-                <br>
-                <label for="password">Mot de passe</label><input type="password" name="password" id="password">
-                <input type="submit" name="submit" value="Connexion">
-            </form>
-        </div>
-    <?php } else if (!isset($_SESSION['user_login'])) { ?>
-        <div id="already_connected">
-            <p>Vous êtes connecté !</p>
-        </div>
-    <?php } ?>
+    <div id="connexion">
+        <form id="connexion_form" action="#" method="post">
+            <label for="login">Login</label><input type="text" name="login" id="login">
+            <br>
+            <label for="password">Mot de passe</label><input type="password" name="password" id="password">
+            <input type="submit" name="submit" value="Connexion">
+        </form>
+    </div>
     <?php include_once('footer.php'); ?>
 </body>
 </html>
