@@ -32,7 +32,7 @@
     if (isset($_SESSION['favoris'])) {
         $fav = in_array($id, $_SESSION['favoris']);
     } else {
-    $fav = 0;
+        $fav = 0;
     }
 ?>
 

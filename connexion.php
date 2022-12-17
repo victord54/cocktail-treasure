@@ -14,7 +14,7 @@ try {
 }
 if (isset($_POST['submit'])) {
     if (isset($_POST['login']) && isset($_POST['password'])) {
-        $sqlQuery = "SELECT prenom, `login`, mdp FROM utilisateur WHERE `login` = :id;";
+        $sqlQuery = "SELECT id_utilisateur, prenom, `login`, mdp FROM utilisateur WHERE `login` = :id;";
         $statement = $pdo->prepare($sqlQuery);
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $statement->bindValue(":id", $_POST['login']);
@@ -22,10 +22,36 @@ if (isset($_POST['submit'])) {
         $identifiants = $statement->fetch();
         if ($identifiants) {
             if (password_verify($_POST['password'], $identifiants['mdp'])) {
-                echo 'Bienvenue ' . $identifiants['prenom'];
                 $_SESSION['user_login'] = $identifiants['login'];
                 $_SESSION['user_name'] = $identifiants['prenom'];
+                if (!isset($_SESSION['favoris'])){
+                    $_SESSION['favoris'] = array();
+                }
+
+                //On mets dans la bdd toutes les recettes favorites qui n'y étaient pas au préalable
+                foreach ($_SESSION['favoris'] as $fav){
+                    echo "$fav";
+                    $sqlFav = "INSERT IGNORE INTO favoris (id_utilisateur, id_recette) VALUES (:id, :recette)";
+                    $query = $pdo->prepare($sqlFav);
+                    $query->bindValue(":id", $identifiants['id_utilisateur'], PDO::PARAM_INT);
+                    $query->bindValue(":recette", $fav, PDO::PARAM_INT);
+                    $query->execute();
+                }
+
+                //On remets à 0 le tableau des favoris
                 $_SESSION['favoris'] = array();
+                //On récupère toutes les recettes favorites
+                $sql = "SELECT id_recette FROM favoris WHERE id_utilisateur=:id_user;";
+                $statement = $pdo->prepare($sql);
+                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                $statement->bindValue(":id_user", $identifiants['id_utilisateur']);
+                $statement->execute();
+                $favoris = $statement->fetchAll();
+                
+                foreach ($favoris as $fav){
+                    array_push($_SESSION['favoris'], $fav['id_recette']);
+                }
+                 
                 header("location: index.php");
             } else {
                 echo "Mauvais mot de passe " . $identifiants['prenom'];

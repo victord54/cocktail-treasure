@@ -146,6 +146,7 @@ if (isset($_POST['submit'])) {
 
                 $statement->execute();
                 $inscrit = true;
+                header("location: connexion.php");
             }
         }
     }
