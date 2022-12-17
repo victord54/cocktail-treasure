@@ -1,8 +1,8 @@
 <header>
     <h1 class="cocktail_treasure">
-        <span>Cocktail</span>
-        <span>Cocktail</span>
-        <span>Treasure</span>
+        <span><a href="index.php">Cocktail</a></span>
+        <span><a href="index.php">Cocktail</a></span>
+        <span><a href="index.php">Treasure</a></span>
     </h1>
     <nav class="menu">
         <ul class="nav-menu">
