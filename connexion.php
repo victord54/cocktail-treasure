@@ -25,6 +25,7 @@ if (isset($_POST['submit'])) {
                 echo 'Bienvenue ' . $identifiants['prenom'];
                 $_SESSION['user_login'] = $identifiants['login'];
                 $_SESSION['user_name'] = $identifiants['prenom'];
+                $_SESSION['favoris'] = array();
                 header("location: index.php");
             } else {
                 echo "Mauvais mot de passe " . $identifiants['prenom'];
