@@ -27,7 +27,12 @@
     $query->execute(); 
   }
 
-array_push($_SESSION['favoris'], $id_recette);
+  if (isset($_SESSION['favoris'])){
+    array_push($_SESSION['favoris'], $id_recette);
+  } else {
+    $_SESSION['favoris'] = array();
+    array_push($_SESSION['favoris'], $id_recette);
+  }
 
 
 ?>

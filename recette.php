@@ -29,7 +29,11 @@
     $liste_ingredients = explode("|", $recette['ingredients']);
     //var_dump($liste_ingredients)
 
-    $fav = in_array($id,$_SESSION['favoris']);
+    if (isset($_SESSION['favoris'])) {
+        $fav = in_array($id, $_SESSION['favoris']);
+    } else {
+    $fav = 0;
+    }
 ?>
 
 <!DOCTYPE html>
