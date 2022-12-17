@@ -30,7 +30,6 @@ if (isset($_POST['submit'])) {
 
                 //On mets dans la bdd toutes les recettes favorites qui n'y étaient pas au préalable
                 foreach ($_SESSION['favoris'] as $fav){
-                    echo "$fav";
                     $sqlFav = "INSERT IGNORE INTO favoris (id_utilisateur, id_recette) VALUES (:id, :recette)";
                     $query = $pdo->prepare($sqlFav);
                     $query->bindValue(":id", $identifiants['id_utilisateur'], PDO::PARAM_INT);
