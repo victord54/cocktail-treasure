@@ -101,13 +101,14 @@ try {
             if (!empty($no_recettes_id))
                 $sqlQuery = $sqlQuery . '1';
             
-            if (!empty($recette_search)) {
+            if (!empty($_GET['recette'])) {
                 $recettes = $recette_search;
             } else {
                 $statement = $pdo->prepare($sqlQuery);
                 $statement->setFetchMode(PDO::FETCH_ASSOC);
                 $statement->execute();
                 $recettes = $statement->fetchAll();
+                var_dump($recettes);
             }
             foreach ($recettes as $recette) { 
             if (isset($id_present)) {
