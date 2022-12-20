@@ -199,7 +199,7 @@
                 <br>
                 <label for="tel">N° de téléphone : </label><input type="text" name="tel" id="tel" <?php if (isset($infos["num_tel"])) echo("value=\"" . $infos["num_tel"] . "\"") ?>>
                 <br>
-                <label for="adresse">Adresse postale : </label><input type="text" name="adresse" id="adresse" <?php if (isset($infos["adresse_postale"])) echo("value=\"" . $infos["adresse_postale"] . "\"") ?>>
+                <label for="adresse">Adresse postale : </label><input type="text" name="adresse"  size="50" id="adresse" <?php if (isset($infos["adresse_postale"])) echo("value=\"" . $infos["adresse_postale"] . "\"") ?>>
                 <br>
             </fieldset>
             <fieldset id="field2">
@@ -213,7 +213,7 @@
             </fieldset>
             <div class="separ"></div>
             <br><br>
-            <input type="submit" name="submit" id="valider_bouton" value="Valider la modification">
+            <input type="submit" name="submit" id="valider_bouton" value="Valider les modifications">
             </form>
         </div>
     

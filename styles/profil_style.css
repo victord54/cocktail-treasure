@@ -4,6 +4,9 @@ label {
 
 input {
     margin-top : 10px;
+    outline: 0;
+    border-width: 0 0 2px;
+    size: 100px;
 }
 
 input:focus {
@@ -30,7 +33,15 @@ input:focus {
 fieldset {
     float: left;
 }
- 
+
+legend {
+    border: 1px solid black;
+    padding : 10px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 20px;
+    padding-right: 30px;
+}
 
 .separ {
     clear : left;
