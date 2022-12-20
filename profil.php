@@ -17,8 +17,6 @@
     $statement->bindValue(":id", $_SESSION['user_login']);
     $statement->execute();
     $infos = $statement->fetch();
-    var_dump($infos);
-
 
     if (isset($_POST['submit'])) {
         $verifs = array(
@@ -173,7 +171,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/header_style.css">
     <link rel="stylesheet" href="styles/footer_style.css">
-    <title>Profil</title>
+    <link rel="stylesheet" href="styles/profil_style.css">
+
+    <title>Mon profil</title>
 </head>
 <body>
 </script>
@@ -183,16 +183,8 @@
     
     <div>
             <form action="#" method="post">
-            <fieldset>
-            <legend>Informations de connexion</legend>
-                <label for="email">E-mail : </label><input type="email" name="email" id="email" <?php echo("value=\"" . $infos["email"] . "\"") ?>>
-                <br>
-                <label for="login">Login : </label><input type="text" name="login" id="login" required="required" <?php echo("value=\"" . $infos["login"] . "\"") ?>>
-                <br>
-                <label for="password">Mot de passe : </label><input type="password" name="password" id="password">
-                <br>
-            </fieldset>
-            <fieldset>
+          
+            <fieldset id="field1">
             <legend>Informations personnelles</legend>
 
                 <label>Sexe : </label>
@@ -210,7 +202,18 @@
                 <label for="adresse">Adresse postale : </label><input type="text" name="adresse" id="adresse" <?php if (isset($infos["adresse_postale"])) echo("value=\"" . $infos["adresse_postale"] . "\"") ?>>
                 <br>
             </fieldset>
-                <input type="submit" name="submit" id="valider_bouton" value="Valider la modification">
+            <fieldset id="field2">
+            <legend>Informations de connexion</legend>
+                <label for="email">E-mail : </label><input type="email" name="email" id="email" <?php echo("value=\"" . $infos["email"] . "\"") ?>>
+                <br/>
+                <label for="login">Login : </label><input type="text" name="login" id="login" required="required" <?php echo("value=\"" . $infos["login"] . "\"") ?>>
+                <br>
+                <label for="password">Mot de passe : </label><input type="password" name="password" id="password">
+                <br>
+            </fieldset>
+            <div class="separ"></div>
+            <br><br>
+            <input type="submit" name="submit" id="valider_bouton" value="Valider la modification">
             </form>
         </div>
     

@@ -1,0 +1,37 @@
+label {
+    margin-top : 10px;
+}
+
+input {
+    margin-top : 10px;
+}
+
+input:focus {
+    background-color: lightblue;
+    border: 3px solid #555;
+}
+
+
+
+#valider_bouton {
+    padding: 16px 32px;
+    border-radius: 15px;
+    float:inline-start;
+    margin-left: 10%;
+    border: none;
+    font-size: 15px;
+}
+
+#valider_bouton:hover {
+    background-color: rgb(104, 160, 179);
+
+}
+
+fieldset {
+    float: left;
+}
+ 
+
+.separ {
+    clear : left;
+}
