@@ -43,12 +43,17 @@ try {
             $recettes_id = array();
             $no_recettes_id = array();
             if (!empty($_GET['ingredients'])) {
-                $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE nom LIKE :nom;";
-                $statement = $pdo->prepare($sqlQuery);
-                $statement->bindValue(':nom', '%'.$_GET['ingredients'].'%');
-                $statement->setFetchMode(PDO::FETCH_ASSOC);
-                $statement->execute();
-                $recettes_id = $statement->fetchAll();
+                $ingrs = explode(", ", $_GET['ingredients']);
+                var_dump($ingrs);
+                foreach ($ingrs as $ingr) {
+                    $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE nom LIKE :nom;";
+                    $statement = $pdo->prepare($sqlQuery);
+                    $statement->bindValue(':nom', '%'.$ingr.'%');
+                    $statement->setFetchMode(PDO::FETCH_ASSOC);
+                    $statement->execute();
+                    array_push($recettes_id, $statement->fetchAll());
+                }
+                var_dump($recettes_id);
             }
 
             if (!empty($_GET['no_ingredients'])) {
@@ -63,9 +68,11 @@ try {
             
             $sqlQuery = "SELECT titre, id_recette FROM recette WHERE ";
             // Ajoute les recettes avec les ingrédients
-            foreach ($recettes_id as $id) {
-                $sqlQuery = $sqlQuery . 'id_recette = '. $id['id_recette'] . ' OR ';
-            }
+            foreach ($recettes_id as $recette_id) {
+                foreach ($recette_id as $id) {
+                    $sqlQuery = $sqlQuery . 'id_recette = '. $id['id_recette'] . ' OR ';
+                }
+        }
             if (!empty($recettes_id))
                 $sqlQuery = $sqlQuery . '0 ';
 
