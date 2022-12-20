@@ -44,7 +44,6 @@ try {
             $no_recettes_id = array();
             if (!empty($_GET['ingredients'])) {
                 $ingrs = explode(", ", $_GET['ingredients']);
-                var_dump($ingrs);
                 foreach ($ingrs as $ingr) {
                     $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE nom LIKE :nom;";
                     $statement = $pdo->prepare($sqlQuery);
@@ -57,12 +56,15 @@ try {
             }
 
             if (!empty($_GET['no_ingredients'])) {
-                $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE nom LIKE :nom;";
-                $statement = $pdo->prepare($sqlQuery);
-                $statement->bindValue(':nom', '%'.$_GET['no_ingredients'].'%');
-                $statement->setFetchMode(PDO::FETCH_ASSOC);
-                $statement->execute();
-                $no_recettes_id = $statement->fetchAll();
+                $no_ingrs = explode(", ", $_GET['no_ingredients']);
+                foreach ($no_ingrs as $no_ingr) {
+                    $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE nom LIKE :nom;";
+                    $statement = $pdo->prepare($sqlQuery);
+                    $statement->bindValue(':nom', '%'.$no_ingr.'%');
+                    $statement->setFetchMode(PDO::FETCH_ASSOC);
+                    $statement->execute();
+                    array_push($no_recettes_id, $statement->fetchAll());
+                }
             }
 
             
@@ -77,9 +79,10 @@ try {
                 $sqlQuery = $sqlQuery . '0 ';
 
             // Ajoute les recettes sans les ingrédients
-            foreach ($no_recettes_id as $id) {
-                $sqlQuery = $sqlQuery . 'id_recette != '. $id['id_recette'] . ' AND ';
-            }
+            foreach ($no_recettes_id as $no_recette_id)
+                foreach ($no_recette_id as $id) {
+                    $sqlQuery = $sqlQuery . 'id_recette != '. $id['id_recette'] . ' AND ';
+                }
             if (!empty($no_recettes_id))
                 $sqlQuery = $sqlQuery . '1';
 
