@@ -32,11 +32,11 @@ try {
 
     <?php if (empty($_GET['ingredients']) && empty($_GET['no_ingredients']) && empty($_GET['recette'])) { ?>
         <form id="ingr_search_form" action="#" method="get">
-            <label for="ingredients">Ingédients recherchés :</label><input type="text" name="ingredients" id="ingredients" placeholder="champagne, poire, ...">
+            <label for="ingredients">Ingédients recherchés :</label><input type="text" oninput="formState()" name="ingredients" id="ingredients" placeholder="champagne, poire, ...">
             <br>
-            <label for="no_ingredients">Ingédients non désirés :</label><input type="text" name="no_ingredients" id="no_ingredients" placeholder="noix, oeufs, ...">
+            <label for="no_ingredients">Ingédients non désirés :</label><input type="text" oninput="formState()" name="no_ingredients" id="no_ingredients" placeholder="noix, oeufs, ...">
             <br>
-            <label for="recette">Recette recherchée :</label><input type="text" name="recette" id="recette" placeholder="Alerte à Malibu">
+            <label for="recette">Recette recherchée :</label><input type="text" oninput="formState()" name="recette" id="recette" placeholder="Alerte à Malibu">
             <br>
             <input type="submit" value="Rechercher">
         </form>
@@ -132,5 +132,27 @@ try {
         <?php } ?>
     <?php } ?>
     <?php include_once("footer.php"); ?>
+
+    <script>
+        function formState() {
+            if (document.getElementById('ingredients').value.toString().length != 0)
+                document.getElementById('recette').disabled = true;
+            else {
+                if (document.getElementById('no_ingredients').value.toString().length != 0)
+                    document.getElementById('recette').disabled = true;
+                else
+                    document.getElementById('recette').disabled = false;
+            }
+            
+            if (document.getElementById('recette').value.toString().length != 0) {
+                document.getElementById('ingredients').disabled = true;
+                document.getElementById('no_ingredients').disabled = true;
+            } else {
+                document.getElementById('ingredients').disabled = false;
+                document.getElementById('no_ingredients').disabled = false;
+            }
+
+        }
+    </script>
 </body>
 </html>
