@@ -30,11 +30,13 @@ try {
 <body>
     <?php include_once("header.php"); ?>
 
-    <?php if (empty($_GET['ingredients']) && empty($_GET['no_ingredients'])) { ?>
-        <form id="search_form" action="#" method="get">
+    <?php if (empty($_GET['ingredients']) && empty($_GET['no_ingredients']) && empty($_GET['recette'])) { ?>
+        <form id="ingr_search_form" action="#" method="get">
             <label for="ingredients">Ingédients recherchés :</label><input type="text" name="ingredients" id="ingredients" placeholder="champagne, poire, ...">
             <br>
             <label for="no_ingredients">Ingédients non désirés :</label><input type="text" name="no_ingredients" id="no_ingredients" placeholder="noix, oeufs, ...">
+            <br>
+            <label for="recette">Recette recherchée :</label><input type="text" name="recette" id="recette" placeholder="Alerte à Malibu">
             <br>
             <input type="submit" value="Rechercher">
         </form>
@@ -52,7 +54,6 @@ try {
                     $statement->execute();
                     array_push($recettes_id, $statement->fetchAll());
                 }
-                var_dump($recettes_id);
             }
 
             if (!empty($_GET['no_ingredients'])) {
@@ -67,6 +68,15 @@ try {
                 }
             }
 
+            if (!empty($_GET['recette'])) {
+                $sqlQuery = "SELECT titre, id_recette FROM recette WHERE UPPER(titre) LIKE :titre;";
+                $statement = $pdo->prepare($sqlQuery);
+                $statement->bindValue(':titre', '%'. strtoupper($_GET['recette']).'%');
+                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                $statement->execute();
+                $recette_search =  $statement->fetchAll();
+            }
+
             
             $sqlQuery = "SELECT titre, id_recette FROM recette WHERE ";
             // Ajoute les recettes avec les ingrédients
@@ -74,9 +84,14 @@ try {
                 foreach ($recette_id as $id) {
                     $sqlQuery = $sqlQuery . 'id_recette = '. $id['id_recette'] . ' OR ';
                 }
-        }
-            if (!empty($recettes_id))
+            }
+            
+            if (!empty($recettes_id)) {
                 $sqlQuery = $sqlQuery . '0 ';
+                if (!empty($no_recettes_id))
+                    $sqlQuery = $sqlQuery . 'AND ';
+            }
+
 
             // Ajoute les recettes sans les ingrédients
             foreach ($no_recettes_id as $no_recette_id)
@@ -85,11 +100,15 @@ try {
                 }
             if (!empty($no_recettes_id))
                 $sqlQuery = $sqlQuery . '1';
-
-            $statement = $pdo->prepare($sqlQuery);
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
-            $statement->execute();
-            $recettes = $statement->fetchAll();
+            
+            if (!empty($recette_search)) {
+                $recettes = $recette_search;
+            } else {
+                $statement = $pdo->prepare($sqlQuery);
+                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                $statement->execute();
+                $recettes = $statement->fetchAll();
+            }
             foreach ($recettes as $recette) { 
             if (isset($id_present)) {
                 $sqlQuery ="SELECT id_recette FROM recette WHERE titre=\"$recette\"" ;
