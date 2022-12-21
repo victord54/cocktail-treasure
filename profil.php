@@ -17,6 +17,7 @@
     $statement->bindValue(":id", $_SESSION['user_login']);
     $statement->execute();
     $infos = $statement->fetch();
+    $print_mess_erreur = false;
 
     if (isset($_POST['submit'])) {
         $verifs = array(
@@ -90,7 +91,6 @@
             $verifs["adresse"] = true;
         }
 
-        $print_mess_erreur = false;
         foreach ($verifs as $key => $value) {
             if ($value == false) {
                 $print_mess_erreur = true;
@@ -180,7 +180,20 @@
 
     <?php echo "\n"; include_once("header.php");?>
     <h1>Mon profil : </h1><br/><br/>
-    
+    <?php if ($print_mess_erreur) { ?>
+        <div id="erreur_formulaire">
+            <h1>Erreurs dans le formulaire</h1>
+            <?php
+                echo("<ul>\n");
+                foreach ($verifs as $key => $value) {
+                    if ($value == false) {
+                        echo("\t\t<li>$key</li>\n");
+                    }
+                }
+                echo("\t</ul>\n<br><br>\n");
+            ?>
+        </div>
+    <?php } ?>
     <div>
             <form action="#" method="post">
           
