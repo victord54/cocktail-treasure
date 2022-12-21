@@ -1,5 +1,5 @@
-.liste_ingredients {
-    list-style: georgian;
+#liste_ingredients li {
+    padding-left:100px;
 }
 
 

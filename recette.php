@@ -88,9 +88,9 @@ jQuery(document).ready(function($){
     <div>
     <h1><?php echo $recette['titre'];?></h1>
     <p>Pour cette recette, vous aurez besoin de :
-        <ul class="liste_ingredients"><?php 
+        <ul id="liste_ingredients"><?php 
         foreach ($liste_ingredients as $ingredient){
-            echo '<li>' . $ingredient . '</li>';
+            echo '<li> ♣ ' . $ingredient . '</li>';
         }
         ?></ul>
     </p>
