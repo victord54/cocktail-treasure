@@ -11,7 +11,9 @@
         die('Erreur : ' . $e->getMessage());
     }
 
-    sort($_SESSION['favoris']);
+    if (isset($_SESSION['favoris'])){
+        sort($_SESSION['favoris']);
+    }
 
     if (isset($_SESSION['favoris'])) {
         $fav = true;

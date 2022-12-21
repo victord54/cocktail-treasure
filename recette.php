@@ -97,8 +97,8 @@ jQuery(document).ready(function($){
     <p><?php echo $recette['preparation'];?></p>
     
     <div>
-        <button id="addFav" <?php if ($fav) { ?> style="display:none" <?php } ?>>Ajouter aux favoris ♡</button>
-        <button id="removeFav" <?php if (!$fav) { ?> style="display:none" <?php } ?>>Enlever des favoris ❤</button>
+        <button id="addFav" <?php if ($fav) { ?> style="display:none" <?php } ?>>Ajouter aux favoris <span id="coeur_vide"> ♡ </span></button>
+        <button id="removeFav" <?php if (!$fav) { ?> style="display:none" <?php } ?>>Enlever des favoris <span id="coeur_plein"> ❤ </span></button>
     </div>
 
 </div>
