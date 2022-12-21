@@ -30,11 +30,13 @@ try {
 <body>
     <?php include_once("header.php"); ?>
 
-    <?php if (empty($_GET['ingredients']) && empty($_GET['no_ingredients'])) { ?>
-        <form id="search_form" action="#" method="get">
-            <label for="ingredients">Ingédients recherchés :</label><input type="text" name="ingredients" id="ingredients" placeholder="champagne, poire, ...">
+    <?php if (empty($_GET['ingredients']) && empty($_GET['no_ingredients']) && empty($_GET['recette'])) { ?>
+        <form id="ingr_search_form" action="#" method="get">
+            <label for="ingredients">Ingédients recherchés :</label><input type="text" oninput="formState()" name="ingredients" id="ingredients" placeholder="champagne, poire, ...">
             <br>
-            <label for="no_ingredients">Ingédients non désirés :</label><input type="text" name="no_ingredients" id="no_ingredients" placeholder="noix, oeufs, ...">
+            <label for="no_ingredients">Ingédients non désirés :</label><input type="text" oninput="formState()" name="no_ingredients" id="no_ingredients" placeholder="noix, oeufs, ...">
+            <br>
+            <label for="recette">Recette recherchée :</label><input type="text" oninput="formState()" name="recette" id="recette" placeholder="Alerte à Malibu">
             <br>
             <input type="submit" value="Rechercher">
         </form>
@@ -43,43 +45,71 @@ try {
             $recettes_id = array();
             $no_recettes_id = array();
             if (!empty($_GET['ingredients'])) {
-                $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE nom LIKE :nom;";
-                $statement = $pdo->prepare($sqlQuery);
-                $statement->bindValue(':nom', '%'.$_GET['ingredients'].'%');
-                $statement->setFetchMode(PDO::FETCH_ASSOC);
-                $statement->execute();
-                $recettes_id = $statement->fetchAll();
+                $ingrs = explode(", ", $_GET['ingredients']);
+                foreach ($ingrs as $ingr) {
+                    $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE nom LIKE :nom;";
+                    $statement = $pdo->prepare($sqlQuery);
+                    $statement->bindValue(':nom', '%'.$ingr.'%');
+                    $statement->setFetchMode(PDO::FETCH_ASSOC);
+                    $statement->execute();
+                    array_push($recettes_id, $statement->fetchAll());
+                }
             }
 
             if (!empty($_GET['no_ingredients'])) {
-                $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE nom LIKE :nom;";
+                $no_ingrs = explode(", ", $_GET['no_ingredients']);
+                foreach ($no_ingrs as $no_ingr) {
+                    $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE nom LIKE :nom;";
+                    $statement = $pdo->prepare($sqlQuery);
+                    $statement->bindValue(':nom', '%'.$no_ingr.'%');
+                    $statement->setFetchMode(PDO::FETCH_ASSOC);
+                    $statement->execute();
+                    array_push($no_recettes_id, $statement->fetchAll());
+                }
+            }
+
+            if (!empty($_GET['recette'])) {
+                $sqlQuery = "SELECT titre, id_recette FROM recette WHERE UPPER(titre) LIKE :titre;";
                 $statement = $pdo->prepare($sqlQuery);
-                $statement->bindValue(':nom', '%'.$_GET['no_ingredients'].'%');
+                $statement->bindValue(':titre', '%'. strtoupper($_GET['recette']).'%');
                 $statement->setFetchMode(PDO::FETCH_ASSOC);
                 $statement->execute();
-                $no_recettes_id = $statement->fetchAll();
+                $recette_search =  $statement->fetchAll();
             }
 
             
             $sqlQuery = "SELECT titre, id_recette FROM recette WHERE ";
             // Ajoute les recettes avec les ingrédients
-            foreach ($recettes_id as $id) {
-                $sqlQuery = $sqlQuery . 'id_recette = '. $id['id_recette'] . ' OR ';
+            foreach ($recettes_id as $recette_id) {
+                foreach ($recette_id as $id) {
+                    $sqlQuery = $sqlQuery . 'id_recette = '. $id['id_recette'] . ' OR ';
+                }
             }
-            if (!empty($recettes_id))
+            
+            if (!empty($recettes_id)) {
                 $sqlQuery = $sqlQuery . '0 ';
+                if (!empty($no_recettes_id))
+                    $sqlQuery = $sqlQuery . 'AND ';
+            }
+
 
             // Ajoute les recettes sans les ingrédients
-            foreach ($no_recettes_id as $id) {
-                $sqlQuery = $sqlQuery . 'id_recette != '. $id['id_recette'] . ' AND ';
-            }
+            foreach ($no_recettes_id as $no_recette_id)
+                foreach ($no_recette_id as $id) {
+                    $sqlQuery = $sqlQuery . 'id_recette != '. $id['id_recette'] . ' AND ';
+                }
             if (!empty($no_recettes_id))
                 $sqlQuery = $sqlQuery . '1';
-
-            $statement = $pdo->prepare($sqlQuery);
-            $statement->setFetchMode(PDO::FETCH_ASSOC);
-            $statement->execute();
-            $recettes = $statement->fetchAll();
+            
+            if (!empty($_GET['recette'])) {
+                $recettes = $recette_search;
+            } else {
+                $statement = $pdo->prepare($sqlQuery);
+                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                $statement->execute();
+                $recettes = $statement->fetchAll();
+                var_dump($recettes);
+            }
             foreach ($recettes as $recette) { 
             if (isset($id_present)) {
                 $sqlQuery ="SELECT id_recette FROM recette WHERE titre=\"$recette\"" ;
@@ -103,5 +133,27 @@ try {
         <?php } ?>
     <?php } ?>
     <?php include_once("footer.php"); ?>
+
+    <script>
+        function formState() {
+            if (document.getElementById('ingredients').value.toString().length != 0)
+                document.getElementById('recette').disabled = true;
+            else {
+                if (document.getElementById('no_ingredients').value.toString().length != 0)
+                    document.getElementById('recette').disabled = true;
+                else
+                    document.getElementById('recette').disabled = false;
+            }
+            
+            if (document.getElementById('recette').value.toString().length != 0) {
+                document.getElementById('ingredients').disabled = true;
+                document.getElementById('no_ingredients').disabled = true;
+            } else {
+                document.getElementById('ingredients').disabled = false;
+                document.getElementById('no_ingredients').disabled = false;
+            }
+
+        }
+    </script>
 </body>
 </html>
