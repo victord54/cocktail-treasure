@@ -2,6 +2,7 @@
 session_start();
 ini_set('display_errors', TRUE);
 error_reporting(E_ALL);
+setlocale( LC_ALL, 'french' );
 
 $login = file_get_contents("data/login");
 $password = file_get_contents("data/password");
@@ -19,6 +20,7 @@ $statement->setFetchMode(PDO::FETCH_ASSOC);
 $statement->execute();
 $list_recette = $statement->fetchAll();
 
+
 ?>
 
 <!DOCTYPE html>
@@ -31,15 +33,89 @@ $list_recette = $statement->fetchAll();
     <link rel="stylesheet" href="styles/footer_style.css">
     <link rel="stylesheet" href="styles/index_style.css">
     <link rel="stylesheet" href="styles/recettes_grid_style.css">
-    <link rel="stylesheet" href="styles/recette_style.css">
-    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+
+    <title>Recherche</title>
 </head>
 <body>
     <?php include_once("header.php"); ?>
+    <script>
+        $(function() {
+            $( "#ingredients" ).autocomplete({
+                source: function(requete, reponse) {
+                    //Extrait le dernier ingrédient entré
+                    var ingredientText = extractLast(requete.term);
+                    $.ajax({
+                        url: "recherche_requete.php",
+                        type: 'post',
+                        dataType: "json",
+                        data: {
+                            ingredient: ingredientText
+                        },
+                        success: function(data) {
+                            reponse(data);
+                        }
+                    });
+            },
+                select: function(event,ui ) {
+                    //Récupère et split les ingrédients au niveau des ","
+                    var terms = split($('#ingredients').val());
+                    //Enlève le dernier élément entré par l'utilisateur qui est le début de l'ingrédient
+                    terms.pop();
+                    //Ajoute l'élément sélectionné
+                    terms.push(ui.item.label);
+                    //Ajoute au tableau "" pour avoir un dernier élément
+                    terms.push( "" );
+                    //On sépare les éléments du tableau avec des ","
+                    $('#ingredients').val(terms.join( ", " ));
+
+                    return false;
+                }
+                
+            });
+
+            $( "#no_ingredients" ).autocomplete({
+                source: function( requete, reponse ) {
+                    var ingredientText = extractLast(requete.term);
+                    $.ajax({
+                        url: "recherche_requete.php",
+                        type: 'post',
+                        dataType: "json",
+                        data: {
+                            ingredient: ingredientText
+                        },
+                        success: function( data ) {
+                            console.log(data);
+                            reponse( data );
+                        }
+                    });
+            },
+            select: function( event, ui ) {
+                var terms = split( $('#no_ingredients').val());
+                terms.pop();
+                terms.push(ui.item.label);    
+                terms.push("");
+                $('#no_ingredients').val(terms.join( ", " ));
+
+                return false;
+            }
+                
+            });
+
+        });
+        function split(val) {
+            return val.split( /,\s*/ );
+        }
+        function extractLast(term) {
+            return split(term).pop();
+        }
+    </script>
 
     <?php if (empty($_GET['ingredients']) && empty($_GET['no_ingredients']) && empty($_GET['recette'])) { ?>
         <form id="ingr_search_form" action="#" method="get">
-            <label for="ingredients">Ingédients recherchés :</label><input type="text" oninput="formState()" name="ingredients" id="ingredients" placeholder="champagne, poire, ...">
+            <label for="ingredients">Ingédients recherchés :</label><input type="text" oninput="formState()" name="ingredients" id='ingredients' placeholder="champagne, poire, ...">
             <br>
             <label for="no_ingredients">Ingédients non désirés :</label><input type="text" oninput="formState()" name="no_ingredients" id="no_ingredients" placeholder="noix, oeufs, ...">
             <br>
@@ -62,24 +138,31 @@ $list_recette = $statement->fetchAll();
             if (!empty($_GET['ingredients'])) {
                 $ingrs = explode(", ", $_GET['ingredients']);
                 foreach ($ingrs as $ingr) {
-                    $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE nom LIKE :nom;";
-                    $statement = $pdo->prepare($sqlQuery);
-                    $statement->bindValue(':nom', '%'.$ingr.'%');
-                    $statement->setFetchMode(PDO::FETCH_ASSOC);
-                    $statement->execute();
-                    array_push($recettes_id, $statement->fetchAll());
+                    if ($ingr != ''){
+                        $ingr = mb_strtoupper($ingr, 'UTF-8');
+                        $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE upper(nom) LIKE :nom;";
+                        $statement = $pdo->prepare($sqlQuery);
+                        $statement->bindValue(':nom', '%' . $ingr . '%');
+                        $statement->setFetchMode(PDO::FETCH_ASSOC);
+                        $statement->execute();
+                        array_push($recettes_id, $statement->fetchAll());
+                    }
                 }
             }
 
             if (!empty($_GET['no_ingredients'])) {
                 $no_ingrs = explode(", ", $_GET['no_ingredients']);
                 foreach ($no_ingrs as $no_ingr) {
-                    $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE nom LIKE :nom;";
-                    $statement = $pdo->prepare($sqlQuery);
-                    $statement->bindValue(':nom', '%'.$no_ingr.'%');
-                    $statement->setFetchMode(PDO::FETCH_ASSOC);
-                    $statement->execute();
-                    array_push($no_recettes_id, $statement->fetchAll());
+                    if ($no_ingr != '') {
+                        $no_ingr = mb_strtoupper($no_ingr, 'UTF-8');
+                        var_dump($no_ingr);
+                        $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE upper(nom) LIKE :nom;";
+                        $statement = $pdo->prepare($sqlQuery);
+                        $statement->bindValue(':nom', '%' . $no_ingr . '%');
+                        $statement->setFetchMode(PDO::FETCH_ASSOC);
+                        $statement->execute();
+                        array_push($no_recettes_id, $statement->fetchAll());
+                    }
                 }
             }
 
