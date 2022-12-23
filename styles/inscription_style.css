@@ -27,7 +27,7 @@ label[for=h], label[for=f] {
 }
 
 input[type=submit] {
-    background-color: #4316e7;
+    background-color: #b7a9eb;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
@@ -38,9 +38,9 @@ input[type=submit] {
 }
 
 input[type=submit]:hover {
-    background-color: white;
-    color: #53af57;
-    border: 1px solid #53af57;
+    background-color: rgb(235, 225, 225);
+    color: #2b2c2b;
+    border: 1px solid #000000;
 }
 
 #erreur_formulaire {

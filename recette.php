@@ -88,17 +88,17 @@ jQuery(document).ready(function($){
     <div>
     <h1><?php echo $recette['titre'];?></h1>
     <p>Pour cette recette, vous aurez besoin de :
-        <ul class="liste_ingredients"><?php 
+        <ul id="liste_ingredients"><?php 
         foreach ($liste_ingredients as $ingredient){
-            echo '<li>' . $ingredient . '</li>';
+            echo '<li> ♣ ' . $ingredient . '</li>';
         }
         ?></ul>
     </p>
     <p><?php echo $recette['preparation'];?></p>
     
     <div>
-        <button id="addFav" <?php if ($fav) { ?> style="display:none" <?php } ?>>Ajouter aux favoris ♡</button>
-        <button id="removeFav" <?php if (!$fav) { ?> style="display:none" <?php } ?>>Enlever des favoris ❤</button>
+        <button id="addFav" <?php if ($fav) { ?> style="display:none" <?php } ?>>Ajouter aux favoris <span id="coeur_vide"> ♡ </span></button>
+        <button id="removeFav" <?php if (!$fav) { ?> style="display:none" <?php } ?>>Enlever des favoris <span id="coeur_plein"> ❤ </span></button>
     </div>
 
 </div>

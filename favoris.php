@@ -11,9 +11,8 @@
         die('Erreur : ' . $e->getMessage());
     }
 
-    sort($_SESSION['favoris']);
-
-    if (isset($_SESSION['favoris'])) {
+    if (isset($_SESSION['favoris']) && count($_SESSION['favoris']) > 0) {
+        sort($_SESSION['favoris']);
         $fav = true;
         $recettes = array();
 
