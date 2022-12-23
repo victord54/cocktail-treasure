@@ -19,6 +19,7 @@ if (isset($_GET["id"])){
     <link rel="stylesheet" href="styles/header_style.css">
     <link rel="stylesheet" href="styles/footer_style.css">
     <link rel="stylesheet" href="styles/index_style.css">
+    <link rel="stylesheet" href="styles/recettes_grid_style.css">
     <title>Page d'accueil de Cocktail Treasure</title>
 </head>
 <body>

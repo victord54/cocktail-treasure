@@ -100,9 +100,11 @@ function getRecettes($pdo, $id, $recettes){
             if ($id_present) {
                 //echo '<p>' .$id_recette[0]['id_recette'] .'</p>';
                 echo '<p>'. $recette . '</p>';
-             } else {
+            } else {
                 echo '<p>'. $recette['titre'] . '</p>';
-             } ?></section>
+            } ?>
+            <img class="img_recette" src="resources/photos/sample.png" alt="Sample">
+            </section>
         </article>
     <?php } ?>
 </div>
