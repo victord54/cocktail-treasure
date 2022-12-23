@@ -12,6 +12,13 @@ try {
 } catch (Exception $e) {
     die('Erreur : ' . $e->getMessage());
 }
+
+$sqlQuery = "SELECT titre FROM recette";
+$statement = $pdo->prepare($sqlQuery);
+$statement->setFetchMode(PDO::FETCH_ASSOC);
+$statement->execute();
+$list_recette = $statement->fetchAll();
+
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +43,15 @@ try {
             <br>
             <label for="no_ingredients">Ingédients non désirés :</label><input type="text" oninput="formState()" name="no_ingredients" id="no_ingredients" placeholder="noix, oeufs, ...">
             <br>
-            <label for="recette">Recette recherchée :</label><input type="text" oninput="formState()" name="recette" id="recette" placeholder="Alerte à Malibu">
+            <label for="recette">Recette recherchée :</label><input type="text" list="liste_recette" oninput="formState()" oninput="completion()" name="recette" id="recette" placeholder="Alerte à Malibu">
+            <datalist id="liste_recette">
+                <?php
+                    foreach ($list_recette as $recette) {
+                        $tmp = $recette['titre'];
+                        echo "<option value='$tmp'>";
+                    }
+                ?>
+            </datalist>
             <br>
             <input type="submit" value="Rechercher">
         </form>
@@ -108,7 +123,6 @@ try {
                 $statement->setFetchMode(PDO::FETCH_ASSOC);
                 $statement->execute();
                 $recettes = $statement->fetchAll();
-                var_dump($recettes);
             }
             foreach ($recettes as $recette) { 
             if (isset($id_present)) {
@@ -134,26 +148,6 @@ try {
     <?php } ?>
     <?php include_once("footer.php"); ?>
 
-    <script>
-        function formState() {
-            if (document.getElementById('ingredients').value.toString().length != 0)
-                document.getElementById('recette').disabled = true;
-            else {
-                if (document.getElementById('no_ingredients').value.toString().length != 0)
-                    document.getElementById('recette').disabled = true;
-                else
-                    document.getElementById('recette').disabled = false;
-            }
-            
-            if (document.getElementById('recette').value.toString().length != 0) {
-                document.getElementById('ingredients').disabled = true;
-                document.getElementById('no_ingredients').disabled = true;
-            } else {
-                document.getElementById('ingredients').disabled = false;
-                document.getElementById('no_ingredients').disabled = false;
-            }
-
-        }
-    </script>
+    <script src="scripts/recherche_script.js"></script>
 </body>
 </html>
