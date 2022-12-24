@@ -133,38 +133,91 @@ $list_recette = $statement->fetchAll();
         </form>
     <?php } else { ?>
         <?php
-            $recettes_id = array();
-            $no_recettes_id = array();
-            if (!empty($_GET['ingredients'])) {
-                $ingrs = explode(", ", $_GET['ingredients']);
-                foreach ($ingrs as $ingr) {
-                    if ($ingr != ''){
-                        $ingr = mb_strtoupper($ingr, 'UTF-8');
-                        $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE upper(nom) LIKE :nom;";
-                        $statement = $pdo->prepare($sqlQuery);
-                        $statement->bindValue(':nom', '%' . $ingr . '%');
-                        $statement->setFetchMode(PDO::FETCH_ASSOC);
-                        $statement->execute();
-                        array_push($recettes_id, $statement->fetchAll());
+            function getAllSubCat($pdo, $cat) {
+                // On récup toutes les sous cat de la catégorie qu'on a inscrit sur le formulaire
+                $sqlQuery = "SELECT categorie.id_categorie, categorie.nom
+                FROM categorie WHERE nom IN
+                    (SELECT sous_categorie.nom
+                    FROM categorie JOIN possede_ssc USING (id_categorie) JOIN sous_categorie USING (id_sous_categorie)
+                    WHERE categorie.nom LIKE :nom);";
+                $statement = $pdo->prepare($sqlQuery);
+                $statement->bindValue(':nom', $cat);
+                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                $statement->execute();
+                $categories = $statement->fetchAll();
+                $tmp = array();
+                foreach ($categories as $categorie) {
+                    // Pour chaque sous_cat de celle de base, on regarde si elle a elle meme une sous_cat
+                    $sqlQuery = "SELECT * FROM categorie NATURAL JOIN possede_ssc WHERE nom LIKE :nom";
+                    $statement = $pdo->prepare($sqlQuery);
+                    $statement->bindValue(':nom', $categorie['nom']);
+                    $statement->setFetchMode(PDO::FETCH_ASSOC);
+                    $statement->execute();
+                    // Si elle en a pas on l'ajoute au tab à renvoyer
+                    if ($statement->columnCount() < 1)
+                        array_push($tmp, $categories);
+                    // Sinon on recommence avec cette sous_cat 
+                    else {
+                        $again = true;
+                        // Normalement la boucle devrait s'arrêter si la requete renvoie un nombre 0 de lignes ce qui veut dire qu'on arrive
+                        // à une feuille du graphe des catégories donc on peut l'ajouter au tableau à renvoyer
+                        while ($again) {
+                            $sqlQuery = "SELECT categorie.id_categorie, categorie.nom
+                            FROM categorie WHERE nom IN
+                                (SELECT sous_categorie.nom
+                                FROM categorie JOIN possede_ssc USING (id_categorie) JOIN sous_categorie USING (id_sous_categorie)
+                                WHERE categorie.nom LIKE :nom);";
+                            $statement = $pdo->prepare($sqlQuery);
+                            $statement->bindValue(':nom', $categorie['nom']);
+                            $statement->setFetchMode(PDO::FETCH_ASSOC);
+                            $statement->execute();
+                            if ($statement->columnCount() < 1)
+                                $again = false;
+                            else {
+                                $tt = $statement->fetchAll();
+                                array_push($tmp, $tt);
+                            }
+                        }
                     }
                 }
+                var_dump($tmp);
+                return $tmp;
             }
+            $ingrs = explode(", ", $_GET['ingredients']);
+            getAllSubCat($pdo, $ingrs[0]);
 
-            if (!empty($_GET['no_ingredients'])) {
-                $no_ingrs = explode(", ", $_GET['no_ingredients']);
-                foreach ($no_ingrs as $no_ingr) {
-                    if ($no_ingr != '') {
-                        $no_ingr = mb_strtoupper($no_ingr, 'UTF-8');
-                        var_dump($no_ingr);
-                        $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE upper(nom) LIKE :nom;";
-                        $statement = $pdo->prepare($sqlQuery);
-                        $statement->bindValue(':nom', '%' . $no_ingr . '%');
-                        $statement->setFetchMode(PDO::FETCH_ASSOC);
-                        $statement->execute();
-                        array_push($no_recettes_id, $statement->fetchAll());
-                    }
-                }
-            }
+            // $recettes_id = array();
+            // $no_recettes_id = array();
+            // if (!empty($_GET['ingredients'])) {
+            //     $ingrs = explode(", ", $_GET['ingredients']);
+            //     foreach ($ingrs as $ingr) {
+            //         if ($ingr != ''){
+            //             $ingr = mb_strtoupper($ingr, 'UTF-8');
+            //             $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE upper(nom) LIKE :nom;";
+            //             $statement = $pdo->prepare($sqlQuery);
+            //             $statement->bindValue(':nom', '%' . $ingr . '%');
+            //             $statement->setFetchMode(PDO::FETCH_ASSOC);
+            //             $statement->execute();
+            //             array_push($recettes_id, $statement->fetchAll());
+            //         }
+            //     }
+            // }
+
+            // if (!empty($_GET['no_ingredients'])) {
+            //     $no_ingrs = explode(", ", $_GET['no_ingredients']);
+            //     foreach ($no_ingrs as $no_ingr) {
+            //         if ($no_ingr != '') {
+            //             $no_ingr = mb_strtoupper($no_ingr, 'UTF-8');
+            //             var_dump($no_ingr);
+            //             $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE upper(nom) LIKE :nom;";
+            //             $statement = $pdo->prepare($sqlQuery);
+            //             $statement->bindValue(':nom', '%' . $no_ingr . '%');
+            //             $statement->setFetchMode(PDO::FETCH_ASSOC);
+            //             $statement->execute();
+            //             array_push($no_recettes_id, $statement->fetchAll());
+            //         }
+            //     }
+            // }
 
             if (!empty($_GET['recette'])) {
                 $sqlQuery = "SELECT titre, id_recette FROM recette WHERE UPPER(titre) LIKE :titre;";
