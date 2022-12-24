@@ -192,12 +192,50 @@ $list_recette = $statement->fetchAll();
                 }
                 return $tmp;
             }
-            $ingrs = explode(", ", $_GET['ingredients']);
-            $ingr1= array();
-            $ingr1 = getAllSubCat($pdo, $ingrs[0], $ingr1);
-            var_dump($ingr1);
+            if (!empty($_GET['ingredients'])) {
+                $ingrs = explode(", ", $_GET['ingredients']);
+                $ingredients = array();
+                for ($i = 0; $i < count($ingrs); $i++) {
+                    if ($ingrs[$i] != '') {
+                        $ingr = array();
+                        $ingr = getAllSubCat($pdo, $ingrs[$i], $ingr);
+                        array_push($ingredients, $ingr);
+                    }
+                }
+                $i = 0;
+                $j = 0;
+                $sqlQuery = "SELECT id_recette FROM contient_ingredient NATURAL JOIN categorie WHERE ";
+                foreach ($ingredients as $ing) {
+                    if ($j == 0){
+                        //$sqlQuery = $sqlQuery . '(';
+                    } else {
+                        $sqlQuery = $sqlQuery . ' AND id_recette IN (SELECT id_recette FROM contient_ingredient NATURAL JOIN categorie WHERE ';
+                    }
+                    foreach ($ing as $in) {
+                        if ($i == 0){
+                            $sqlQuery = $sqlQuery . 'nom = "' . $in . '"'; 
+                        } else{
+                            $sqlQuery = $sqlQuery . ' OR nom = "' . $in . '"'; 
+                        }
+                        $i+=1;
+                    }
+                    $sqlQuery = $sqlQuery . str_repeat(')',$j);
+                    $j+=1;
+                    $i = 0;
+                }
+                var_dump($sqlQuery);
 
-            $recettes_id = array();
+                $recettes_id = array();
+                $statement = $pdo->prepare($sqlQuery);
+                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                $statement->execute();
+                array_push($recettes_id, $statement->fetchAll());
+
+
+            }
+
+
+            /*$recettes_id = array();
             $no_recettes_id = array();
             if (!empty($_GET['ingredients'])) {
                 $ingrs = explode(", ", $_GET['ingredients']);
@@ -212,8 +250,8 @@ $list_recette = $statement->fetchAll();
                         array_push($recettes_id, $statement->fetchAll());
                     }
                 }
-            }
-
+            }*/
+            $no_recettes_id = array();
             if (!empty($_GET['no_ingredients'])) {
                 $no_ingrs = explode(", ", $_GET['no_ingredients']);
                 foreach ($no_ingrs as $no_ingr) {
