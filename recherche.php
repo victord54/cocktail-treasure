@@ -192,6 +192,10 @@ $list_recette = $statement->fetchAll();
                 }
                 return $tmp;
             }
+
+            $recettes_id = array();
+            $no_recettes_id = array();
+
             if (!empty($_GET['ingredients'])) {
                 $ingrs = explode(", ", $_GET['ingredients']);
                 $ingredients = array();
@@ -223,49 +227,42 @@ $list_recette = $statement->fetchAll();
                     $j+=1;
                     $i = 0;
                 }
-                var_dump($sqlQuery);
+                //var_dump($sqlQuery);
 
-                $recettes_id = array();
                 $statement = $pdo->prepare($sqlQuery);
                 $statement->setFetchMode(PDO::FETCH_ASSOC);
                 $statement->execute();
                 array_push($recettes_id, $statement->fetchAll());
-
-
             }
 
-
-            /*$recettes_id = array();
-            $no_recettes_id = array();
-            if (!empty($_GET['ingredients'])) {
-                $ingrs = explode(", ", $_GET['ingredients']);
-                foreach ($ingrs as $ingr) {
-                    if ($ingr != ''){
-                        $ingr = mb_strtoupper($ingr, 'UTF-8');
-                        $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE upper(nom) LIKE :nom;";
-                        $statement = $pdo->prepare($sqlQuery);
-                        $statement->bindValue(':nom', '%' . $ingr . '%');
-                        $statement->setFetchMode(PDO::FETCH_ASSOC);
-                        $statement->execute();
-                        array_push($recettes_id, $statement->fetchAll());
-                    }
-                }
-            }*/
-            $no_recettes_id = array();
             if (!empty($_GET['no_ingredients'])) {
-                $no_ingrs = explode(", ", $_GET['no_ingredients']);
-                foreach ($no_ingrs as $no_ingr) {
-                    if ($no_ingr != '') {
-                        $no_ingr = mb_strtoupper($no_ingr, 'UTF-8');
-                        var_dump($no_ingr);
-                        $sqlQuery = "SELECT id_recette FROM contient_ingredient JOIN categorie USING (id_categorie, id_categorie) WHERE upper(nom) LIKE :nom;";
-                        $statement = $pdo->prepare($sqlQuery);
-                        $statement->bindValue(':nom', '%' . $no_ingr . '%');
-                        $statement->setFetchMode(PDO::FETCH_ASSOC);
-                        $statement->execute();
-                        array_push($no_recettes_id, $statement->fetchAll());
+                $ingrs = explode(", ", $_GET['no_ingredients']);
+                $ingredients = array();
+                for ($i = 0; $i < count($ingrs); $i++) {
+                    if ($ingrs[$i] != '') {
+                        $ingr = array();
+                        $ingr = getAllSubCat($pdo, $ingrs[$i], $ingr);
+                        array_push($ingredients, $ingr);
                     }
                 }
+                $i = 0;
+                $sqlQuery = "SELECT id_recette FROM contient_ingredient NATURAL JOIN categorie WHERE ";
+                foreach ($ingredients as $ing) {
+                    foreach ($ing as $in) {
+                        if ($i == 0){
+                            $sqlQuery = $sqlQuery . 'nom = "' . $in . '"'; 
+                        } else{
+                            $sqlQuery = $sqlQuery . ' OR nom = "' . $in . '"'; 
+                        }
+                        $i+=1;
+                    }
+                }
+                //var_dump($sqlQuery);
+
+                $statement = $pdo->prepare($sqlQuery);
+                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                $statement->execute();
+                array_push($no_recettes_id, $statement->fetchAll());
             }
 
             if (!empty($_GET['recette'])) {
@@ -279,6 +276,8 @@ $list_recette = $statement->fetchAll();
 
             
             $sqlQuery = "SELECT titre, id_recette FROM recette WHERE ";
+            if (!empty($recette_id))
+                $sqlQuery = $sqlQuery . '(';
             // Ajoute les recettes avec les ingrédients
             foreach ($recettes_id as $recette_id) {
                 foreach ($recette_id as $id) {
@@ -287,11 +286,10 @@ $list_recette = $statement->fetchAll();
             }
             
             if (!empty($recettes_id)) {
-                $sqlQuery = $sqlQuery . '0 ';
+                $sqlQuery = $sqlQuery . '0)';
                 if (!empty($no_recettes_id))
-                    $sqlQuery = $sqlQuery . 'AND ';
-            }
-
+                    $sqlQuery = $sqlQuery . ' AND ';
+            } 
 
             // Ajoute les recettes sans les ingrédients
             foreach ($no_recettes_id as $no_recette_id)
@@ -304,6 +302,7 @@ $list_recette = $statement->fetchAll();
             if (!empty($_GET['recette'])) {
                 $recettes = $recette_search;
             } else {
+                //var_dump($sqlQuery);
                 $statement = $pdo->prepare($sqlQuery);
                 $statement->setFetchMode(PDO::FETCH_ASSOC);
                 $statement->execute();
