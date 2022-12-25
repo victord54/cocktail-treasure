@@ -191,13 +191,13 @@
                 <br>
                 <label for="nom">Nom : </label><input type="text" name="nom" id="nom" 
                 <?php 
-                if (isset($_POST["nom"])){
+                if (isset($_POST["nom"])){ //Le formulaire a été envoyé
                     echo ("value=\"" . $_POST["nom"] . "\"");
                     if (!$verifs['nom']){
                         echo "style=\"background-color:red;\"";
                     }
                 } else {
-                    if (isset($infos["nom"])) {
+                    if (isset($infos["nom"])) { //On affiche les valeurs stocké dans la bdd si elle existe qd pas encore eu de formulaire envoyé
                         echo ("value=\"" . $infos["nom"] . "\"");
                     }
                 }
