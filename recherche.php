@@ -86,7 +86,6 @@ $list_recette = $statement->fetchAll();
                             ingredient: ingredientText
                         },
                         success: function( data ) {
-                            console.log(data);
                             reponse( data );
                         }
                     });

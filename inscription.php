@@ -186,7 +186,7 @@ if (isset($_POST['submit'])) {
                 ?>>
                 <?php  if (isset($_POST["nom"])){
                         if (!$verifs['nom']) {
-                         echo "<span id=\"message_erreur\">Le nom n'est pas valide.</span>";}
+                         echo "<span id=\"message_erreur\">Le nom n'est pas valide. Il ne peut pas contenir de chiffre.</span>";}
                 }?>
                 <br><br>
                 <label for="prenom">Prénom</label><input type="text" name="prenom" id="prenom" 
@@ -200,7 +200,7 @@ if (isset($_POST['submit'])) {
                 ?>>
                 <?php  if (isset($_POST["prenom"])){
                         if (!$verifs['prenom']) {
-                         echo "<span id=\"message_erreur\">Le prénom n'est pas valide.</span>";}
+                         echo "<span id=\"message_erreur\">Le prénom n'est pas valide. Il ne peut pas contenir de chiffre.</span>";}
                 }?>
                 <br><br>
                 <label for="email">E-mail</label><input type="email" name="email" id="email" <?php if (isset($_POST["email"])) echo("value=\"" . $_POST["email"] . "\"") ?>>
