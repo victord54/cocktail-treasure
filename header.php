@@ -16,7 +16,7 @@
                 <li class="nav-item" id="profil"><a href="profil.php">Profil</a></li>
                 <li class="nav-item" id="deconnexion"><a href="logout.php">Déconnexion</a></li>
             <?php }?>
-            <li class="nav-item" id="creation_bdd"><a onclick="overrideDataBase()" href="#">Creation bdd</a></li>
+            <!--<li class="nav-item" id="creation_bdd"><a onclick="overrideDataBase()" href="#">Creation bdd</a></li>-->
         </ul>
     </nav>
     <script src="scripts/header_script.js"></script>
