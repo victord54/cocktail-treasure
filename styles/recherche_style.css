@@ -1,0 +1,70 @@
+input {
+    margin-top : 10px;
+    outline: 0;
+    border-width: 0 0 2px;
+}
+
+input:focus {
+    background-color: lightblue;
+    border: 3px solid #555;
+}
+
+#rechercher_bouton {
+    padding: 16px 32px;
+    border-radius: 15px;
+    float:inline-start;
+    margin-left: 10%;
+    border: none;
+    font-size: 15px;
+}
+
+#rechercher_bouton:hover {
+    background-color: #CBC0D3;
+
+}
+
+fieldset {
+    margin-top: 10px;;
+    width:50%;
+
+}
+
+legend {
+    border: 1px solid black;
+    padding : 10px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 20px;
+    padding-right: 30px;
+}
+
+.conteneur_recette {
+    border: 1px solid black;
+    border-radius: 25px;
+    align-items: center;
+    justify-content: center;
+    background-color: #CBC0D3;  
+    cursor: pointer;  
+    transition: all .2s ease-in-out;
+    margin-left:5%;
+    margin-right: 5%;
+    margin-top: 2%;
+    padding : 0.2%;
+
+}
+
+.conteneur_recette:hover{
+    transform: scale(1.1);
+    box-shadow: 2% 2%;
+}
+
+.recette {
+    position: relative;
+    vertical-align: middle;
+}
+.conteneur_recette p {
+    /* padding-top : 35%; */
+    text-align: center;
+    vertical-align: middle;
+    font-size: 25px;
+}

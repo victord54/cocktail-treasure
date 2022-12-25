@@ -17,7 +17,7 @@
     padding: 5%;
     align-items: center;
     justify-content: center;
-    background-color: rgb(173, 149, 175);  
+    background-color: #CBC0D3;  
     cursor: pointer;  
     transition: all .2s ease-in-out;
 }

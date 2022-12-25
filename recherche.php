@@ -31,8 +31,7 @@ $list_recette = $statement->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/header_style.css">
     <link rel="stylesheet" href="styles/footer_style.css">
-    <link rel="stylesheet" href="styles/index_style.css">
-    <link rel="stylesheet" href="styles/recettes_grid_style.css">
+    <link rel="stylesheet" href="styles/recherche_style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
@@ -115,11 +114,17 @@ $list_recette = $statement->fetchAll();
 
     <?php if (empty($_GET['ingredients']) && empty($_GET['no_ingredients']) && empty($_GET['recette'])) { ?>
         <form id="ingr_search_form" action="#" method="get">
-            <label for="ingredients">Ingédients recherchés :</label><input type="text" oninput="formState()" name="ingredients" id='ingredients' placeholder="champagne, poire, ...">
+            <fieldset>
+                <legend>Recherche à partir d'ingrédients</legend>
+            <label for="ingredients">Ingédients désirés :</label><input type="text" size="40" oninput="formState()" name="ingredients" id='ingredients' placeholder="champagne, poire, ...">
             <br>
-            <label for="no_ingredients">Ingédients non désirés :</label><input type="text" oninput="formState()" name="no_ingredients" id="no_ingredients" placeholder="noix, oeufs, ...">
+            <label for="no_ingredients">Ingédients non désirés :</label><input type="text" size = "36" oninput="formState()" name="no_ingredients" id="no_ingredients" placeholder="noix, oeufs, ...">
             <br>
-            <label for="recette">Recette recherchée :</label><input type="text" list="liste_recette" oninput="formState()" oninput="completion()" name="recette" id="recette" placeholder="Alerte à Malibu">
+            </fieldset>
+            <fieldset>
+                <legend>Recherche à partir du nom d'une recette</legend>
+            <label for="recette">Recette recherchée :</label><input type="text" list="liste_recette" size="40" oninput="formState()" oninput="completion()" name="recette" id="recette" placeholder="Alerte à Malibu">
+            </fieldset>
             <datalist id="liste_recette">
                 <?php
                     foreach ($list_recette as $recette) {
@@ -129,7 +134,7 @@ $list_recette = $statement->fetchAll();
                 ?>
             </datalist>
             <br>
-            <input type="submit" value="Rechercher">
+            <input type="submit" id="rechercher_bouton" value="Rechercher">
         </form>
     <?php } else { ?>
         <?php
@@ -152,42 +157,6 @@ $list_recette = $statement->fetchAll();
                     $categories = $statement->fetchAll();
                     foreach ($categories as $categorie) {
                         $tmp = getAllSubCat($pdo, $categorie['nom'], $tmp);
-
-                        
-                        // Pour chaque sous_cat de celle de base, on regarde si elle a elle meme une sous_cat
-                        /*$sqlQuery = "SELECT * FROM categorie NATURAL JOIN possede_ssc WHERE nom LIKE :nom";
-                        $statement = $pdo->prepare($sqlQuery);
-                        $statement->bindValue(':nom', $categorie['nom']);
-                        $statement->setFetchMode(PDO::FETCH_ASSOC);
-                        $statement->execute();*/
-                        // Si elle en a pas on l'ajoute au tab à renvoyer
-                        /*if ($statement->rowCount() < 1) {
-                            array_push($tmp, $categorie);
-                        }
-                        // Sinon on recommence avec cette sous_cat 
-                        else {
-                            $again = true;
-                            // Normalement la boucle devrait s'arrêter si la requete renvoie un nombre 0 de lignes ce qui veut dire qu'on arrive
-                            // à une feuille du graphe des catégories donc on peut l'ajouter au tableau à renvoyer
-                            while ($again) {
-                                $sqlQuery = "SELECT categorie.id_categorie, categorie.nom
-                                FROM categorie WHERE nom IN
-                                    (SELECT sous_categorie.nom
-                                    FROM categorie JOIN possede_ssc USING (id_categorie) JOIN sous_categorie USING (id_sous_categorie)
-                                    WHERE categorie.nom LIKE :nom);";
-                                $statement = $pdo->prepare($sqlQuery);
-                                $statement->bindValue(':nom', $categorie['nom']);
-                                $statement->setFetchMode(PDO::FETCH_ASSOC);
-                                $statement->execute();
-
-                                if ($statement->rowCount() < 1)
-                                    $again = false;
-                                else {
-                                    $tt = $statement->fetchAll();
-                                    array_push($tmp, $tt);
-                                }
-                            }
-                        }*/
                     }
                 }
                 return $tmp;
@@ -276,7 +245,7 @@ $list_recette = $statement->fetchAll();
 
             
             $sqlQuery = "SELECT titre, id_recette FROM recette WHERE ";
-            if (!empty($recette_id))
+            if (!empty($recettes_id))
                 $sqlQuery = $sqlQuery . '(';
             // Ajoute les recettes avec les ingrédients
             foreach ($recettes_id as $recette_id) {
@@ -309,27 +278,27 @@ $list_recette = $statement->fetchAll();
                 $recettes = $statement->fetchAll();
             }
             foreach ($recettes as $recette) { 
-            if (isset($id_present)) {
-                $sqlQuery ="SELECT id_recette FROM recette WHERE titre=\"$recette\"" ;
-                $statement = $pdo->prepare($sqlQuery);
-                $statement->setFetchMode(PDO::FETCH_ASSOC);
-                $statement->execute();
-                $id_recette = $statement->fetchAll();
-                $id_recette = $id_recette[0]['id_recette'];
-            } else {
-                $id_recette = $recette['id_recette'];
-            }?>
-            <article class="conteneur_recette" onclick="window.location.href='recette.php?id= <?php echo $id_recette;?>';">
-                <section class="recette"><?php 
                 if (isset($id_present)) {
-                    //echo '<p>' .$id_recette[0]['id_recette'] .'</p>';
-                    echo '<p>'. $recette . '</p>';
+                    $sqlQuery ="SELECT id_recette FROM recette WHERE titre=\"$recette\"" ;
+                    $statement = $pdo->prepare($sqlQuery);
+                    $statement->setFetchMode(PDO::FETCH_ASSOC);
+                    $statement->execute();
+                    $id_recette = $statement->fetchAll();
+                    $id_recette = $id_recette[0]['id_recette'];
                 } else {
-                    echo '<p>'. $recette['titre'] . '</p>';
-                } ?></section>
-            </article>
+                    $id_recette = $recette['id_recette'];
+                }?>
+                <article class="conteneur_recette" onclick="window.location.href='recette.php?id= <?php echo $id_recette;?>';">
+                    <section class="recette"><?php 
+                    if (isset($id_present)) {
+                        //echo '<p>' .$id_recette[0]['id_recette'] .'</p>';
+                        echo '<p>'. $recette . '</p>';
+                    } else {
+                        echo '<p>'. $recette['titre'] . '</p>';
+                    } ?></section>
+                </article>
+            <?php } ?>
         <?php } ?>
-    <?php } ?>
     <?php include_once("footer.php"); ?>
 
     <script src="scripts/recherche_script.js"></script>
