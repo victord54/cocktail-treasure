@@ -75,7 +75,7 @@ if (isset($_POST['submit'])) {
         $patern = "/[^0-9+]/";
         if (strlen($_POST["tel"]) > 0 && !preg_match($patern, $_POST["tel"])) {
             $verifs["tel"] = true;
-        } else if (strlen($_POST["email"]) == 0) {
+        } else if (strlen($_POST["tel"]) == 0) {
             $verifs["tel"] = true;
         }
 
