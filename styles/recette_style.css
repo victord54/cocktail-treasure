@@ -4,14 +4,15 @@
 
 
 button {
-    padding: 14px 32px;
     border-radius: 15px;
     float:inline-start;
-    margin-left: 10%;
     border: none;
     font-size: 15px;
     height: 50px;
     width:220px;
+    display: block;
+    margin:auto;
+    margin-top : 15px;
 }
 
 #coeur_vide {
@@ -23,3 +24,32 @@ button {
     color:red;
 }
 
+.img_recette{
+    display: block;
+    margin:auto;
+    height: 240px;
+}
+
+#recette {
+    display: block;
+    margin:auto;
+    width: 80%;
+}
+
+#recette h1{
+    text-align: center;
+
+}
+
+
+fieldset{
+    margin-top : 5px;
+}
+legend {
+    border: 1px solid black;
+    padding : 10px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 20px;
+    padding-right: 30px;
+}
