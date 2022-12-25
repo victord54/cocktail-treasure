@@ -100,7 +100,7 @@ if (isset($_POST['submit'])) {
             $statement->execute();
             $identifiants = $statement->fetch();
             if ($identifiants) {
-                echo "Vous êtes déjà inscrit";
+                $verifs['login'] = false;
             } else {
                 $sqlInsert = "INSERT INTO utilisateur(nom, prenom, `login`, mdp, email, sexe, date_naissance, num_tel, adresse_postale)
                 VALUES (:nom, :prenom, :lo, :mdp, :email, :sexe, :date_naissance, :num_tel, :adresse_postale);";
@@ -166,27 +166,8 @@ if (isset($_POST['submit'])) {
 <body>
     <?php
         include_once('header.php');
-        // var_dump($verifs);
-        // echo "<br>";
-        // var_dump($print_mess_erreur);
-        // echo "<pre>";
-        // var_dump($_POST);
-        // echo "</pre>";
     ?>
-    <?php if ($print_mess_erreur) { ?>
-        <div id="erreur_formulaire">
-            <h1>Erreurs dans le formulaire</h1>
-            <?php
-                echo("<ul>\n");
-                foreach ($verifs as $key => $value) {
-                    if ($value == false) {
-                        echo("\t\t<li>$key</li>\n");
-                    }
-                }
-                echo("\t</ul>\n<br><br>\n");
-            ?>
-        </div>
-    <?php } ?>
+
     <?php if (!$inscrit) {  ?>
         <div id="inscription">
             <form id="inscription_form" action="#" method="post">
@@ -194,20 +175,80 @@ if (isset($_POST['submit'])) {
                 <label for="h">Homme</label><input type="radio" name="sexe" id="h" value="h" <?php if (isset($_POST["sexe"]) && $_POST["sexe"] == "h") echo("checked") ?> >
                 <label for="f">Femme</label><input type="radio" name="sexe" id="f" value="f" <?php if (isset($_POST["sexe"]) && $_POST["sexe"] == "f") echo("checked") ?> >
                 <br>
-                <label for="nom">Nom</label><input type="text" name="nom" id="nom" <?php if (isset($_POST["nom"])) echo("value=\"" . $_POST["nom"] . "\"") ?>>
-                <br>
-                <label for="prenom">Prénom</label><input type="text" name="prenom" id="prenom" <?php if (isset($_POST["prenom"])) echo("value=\"" . $_POST["prenom"] . "\"") ?>>
-                <br>
+                <label for="nom">Nom</label><input type="text" name="nom" id="nom" 
+                <?php 
+                if (isset($_POST["nom"])){
+                    echo ("value=\"" . $_POST["nom"] . "\"");
+                    if (!$verifs['nom']){
+                        echo "style=\"background-color:red;\"";
+                    }
+                }
+                ?>>
+                <?php  if (isset($_POST["nom"])){
+                        if (!$verifs['nom']) {
+                         echo "<span id=\"message_erreur\">Le nom n'est pas valide.</span>";}
+                }?>
+                <br><br>
+                <label for="prenom">Prénom</label><input type="text" name="prenom" id="prenom" 
+                <?php 
+                if (isset($_POST["prenom"])){
+                    echo("value=\"" . $_POST["prenom"] . "\"");
+                    if (!$verifs['prenom']){
+                        echo "style=\"background-color:red;\"";
+                    }
+                }
+                ?>>
+                <?php  if (isset($_POST["prenom"])){
+                        if (!$verifs['prenom']) {
+                         echo "<span id=\"message_erreur\">Le prénom n'est pas valide.</span>";}
+                }?>
+                <br><br>
                 <label for="email">E-mail</label><input type="email" name="email" id="email" <?php if (isset($_POST["email"])) echo("value=\"" . $_POST["email"] . "\"") ?>>
                 <br>
-                <label for="login">Login</label><input type="text" name="login" id="login" required="required" <?php if (isset($_POST["login"])) echo("value=\"" . $_POST["login"] . "\"") ?>>
-                <br>
+                <label for="login">Login</label><input type="text" name="login" id="login" required="required" 
+                <?php 
+                    if (isset($_POST["login"])){
+                        echo("value=\"" . $_POST["login"] . "\"");
+                        if (!$verifs['login']){
+                            echo "style=\"background-color:red;\"";
+                        }
+                    }
+                ?>>
+                <?php  if (isset($_POST["login"])){
+                        if (!$verifs['login']) {
+                         echo "<span id=\"message_erreur\">Ce login est déjà utilisé.</span>";}
+                }?>
+                <br><br>
                 <label for="password">Mot de passe</label><input type="password" name="password" id="password" required="required">
                 <br>
-                <label for="dob">Date de naissance</label><input type="date" name="dob" id="dob" <?php if (isset($_POST["dob"])) echo("value=\"" . $_POST["dob"] . "\"") ?>>
-                <br>
-                <label for="tel">N° de téléphone</label><input type="text" name="tel" id="tel" <?php if (isset($_POST["tel"])) echo("value=\"" . $_POST["tel"] . "\"") ?>>
-                <br>
+                <label for="dob">Date de naissance</label><input type="date" name="dob" id="dob" 
+                <?php 
+                    if (isset($_POST["dob"])){
+                        echo("value=\"" . $_POST["dob"] . "\"");
+                        if (!$verifs['naissance']){
+                            echo "style=\"background-color:red;\"";
+                        }
+                    }
+                ?>>
+                <?php  if (isset($_POST["dob"])){
+                        if (!$verifs['naissance']) {
+                         echo "<span id=\"message_erreur\">La date de naissance n'est pas valide.</span>";}
+                }?>
+                <br><br>
+                <label for="tel">N° de téléphone</label><input type="text" name="tel" id="tel" 
+                <?php 
+                    if (isset($_POST["tel"])){
+                        echo("value=\"" . $_POST["tel"] . "\"");
+                        if (!$verifs['tel']){
+                            echo "style=\"background-color:red;\"";
+                        }
+                    } 
+                ?>>
+                <?php  if (isset($_POST["tel"])){
+                        if (!$verifs['tel']) {
+                         echo "<span id=\"message_erreur\">Le numéro de téléphone n'est pas valide.</span>";}
+                }?>
+                <br><br>
                 <label for="adresse">Adresse postale</label><input type="text" name="adresse" id="adresse" <?php if (isset($_POST["adresse"])) echo("value=\"" . $_POST["adresse"] . "\"") ?>>
                 <br>
                 <input type="submit" name="submit" value="Inscription">

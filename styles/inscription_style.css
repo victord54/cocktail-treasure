@@ -46,3 +46,8 @@ input[type=submit]:hover {
 #erreur_formulaire {
     background-color: red;
 }
+
+#message_erreur{
+    font-size: 15px;
+    font-style: italic;
+}

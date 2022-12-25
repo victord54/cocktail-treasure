@@ -43,3 +43,8 @@ legend {
 .separ {
     clear : left;
 }
+
+#message_erreur{
+    font-size: 15px;
+    font-style: italic;
+}
