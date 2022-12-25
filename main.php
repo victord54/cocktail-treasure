@@ -10,7 +10,10 @@ if (isset($_GET["id"])){
     $id = null;
 }
 
-
+//Tableau des caractères à remplacer pour les images
+$search  = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'à', 'á', 'â', 'ã', 'ä', 'å', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ò', 'ó', 'ô', 'õ', 'ö', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'ñ', ' ', '\'');
+//Tableau avec les caractères de remplacement pour les images
+$replace = array('A', 'A', 'A', 'A', 'A', 'A', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 'a', 'a', 'a', 'a', 'a', 'a', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'n', '_','');
 
 $login = file_get_contents("data/login");
 $password = file_get_contents("data/password");
@@ -96,14 +99,23 @@ function getRecettes($pdo, $id, $recettes){
             $id_recette = $recette['id_recette'];
         }?>
         <article class="conteneur_recette" onclick="window.location.href='recette.php?id= <?php echo $id_recette;?>';">
-            <section class="recette"><?php 
+            <section class="recette"><?php
+            $img_titre = null;
             if ($id_present) {
-                //echo '<p>' .$id_recette[0]['id_recette'] .'</p>';
                 echo '<p>'. $recette . '</p>';
+                $img_titre = str_replace($search, $replace, $recette);
             } else {
                 echo '<p>'. $recette['titre'] . '</p>';
+                $img_titre = str_replace($search, $replace, $recette['titre']);
             } ?>
-            <img class="img_recette" src="resources/photos/sample.png" alt="Sample">
+            <?php
+                $path = 'resources/photos/' . $img_titre . '.jpg';
+                if (file_exists($path)){
+                    echo '<img class="img_recette" src="resources/photos/' . $img_titre .'.jpg" alt="Sample">';
+                } else {
+                    echo '<img class="img_recette" src="resources/photos/sample.png" alt="Sample">';
+                }
+            ?>
             </section>
         </article>
     <?php } ?>
