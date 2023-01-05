@@ -79,9 +79,9 @@ if (isset($_POST['submit'])) {
     <?php include_once('header.php'); ?>
     <div id="connexion">
         <form id="connexion_form" action="#" method="post">
-            <label for="login">Login</label><input type="text" name="login" id="login">
+            <label for="login">Login (*)</label><input type="text" name="login" id="login" required="required">
             <br>
-            <label for="password">Mot de passe</label><input type="password" name="password" id="password">
+            <label for="password">Mot de passe (*)</label><input type="password" name="password" id="password" required="required">
             <input type="submit" name="submit" value="Connexion">
         </form>
     </div>

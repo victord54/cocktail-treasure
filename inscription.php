@@ -186,7 +186,7 @@ if (isset($_POST['submit'])) {
                 ?>>
                 <?php  if (isset($_POST["nom"])){
                         if (!$verifs['nom']) {
-                         echo "<span id=\"message_erreur\">Le nom n'est pas valide. Il ne peut pas contenir de chiffre.</span>";}
+                        echo "<span id=\"message_erreur\">Le nom n'est pas valide. Il ne peut pas contenir de chiffre.</span>";}
                 }?>
                 <br><br>
                 <label for="prenom">Prénom</label><input type="text" name="prenom" id="prenom" 
@@ -200,12 +200,12 @@ if (isset($_POST['submit'])) {
                 ?>>
                 <?php  if (isset($_POST["prenom"])){
                         if (!$verifs['prenom']) {
-                         echo "<span id=\"message_erreur\">Le prénom n'est pas valide. Il ne peut pas contenir de chiffre.</span>";}
+                        echo "<span id=\"message_erreur\">Le prénom n'est pas valide. Il ne peut pas contenir de chiffre.</span>";}
                 }?>
                 <br><br>
                 <label for="email">E-mail</label><input type="email" name="email" id="email" <?php if (isset($_POST["email"])) echo("value=\"" . $_POST["email"] . "\"") ?>>
                 <br>
-                <label for="login">Login</label><input type="text" name="login" id="login" required="required" 
+                <label for="login">Login (*)</label><input type="text" name="login" id="login" required="required" 
                 <?php 
                     if (isset($_POST["login"])){
                         echo("value=\"" . $_POST["login"] . "\"");
@@ -216,10 +216,10 @@ if (isset($_POST['submit'])) {
                 ?>>
                 <?php  if (isset($_POST["login"])){
                         if (!$verifs['login']) {
-                         echo "<span id=\"message_erreur\">Ce login est déjà utilisé.</span>";}
+                        echo "<span id=\"message_erreur\">Ce login est déjà utilisé.</span>";}
                 }?>
                 <br><br>
-                <label for="password">Mot de passe</label><input type="password" name="password" id="password" required="required">
+                <label for="password">Mot de passe (*)</label><input type="password" name="password" id="password" required="required">
                 <br>
                 <label for="dob">Date de naissance</label><input type="date" name="dob" id="dob" 
                 <?php 
@@ -232,7 +232,7 @@ if (isset($_POST['submit'])) {
                 ?>>
                 <?php  if (isset($_POST["dob"])){
                         if (!$verifs['naissance']) {
-                         echo "<span id=\"message_erreur\">La date de naissance n'est pas valide.</span>";}
+                        echo "<span id=\"message_erreur\">La date de naissance n'est pas valide.</span>";}
                 }?>
                 <br><br>
                 <label for="tel">N° de téléphone</label><input type="text" name="tel" id="tel" 
@@ -246,7 +246,7 @@ if (isset($_POST['submit'])) {
                 ?>>
                 <?php  if (isset($_POST["tel"])){
                         if (!$verifs['tel']) {
-                         echo "<span id=\"message_erreur\">Le numéro de téléphone n'est pas valide.</span>";}
+                        echo "<span id=\"message_erreur\">Le numéro de téléphone n'est pas valide.</span>";}
                 }?>
                 <br><br>
                 <label for="adresse">Adresse postale</label><input type="text" name="adresse" id="adresse" <?php if (isset($_POST["adresse"])) echo("value=\"" . $_POST["adresse"] . "\"") ?>>
